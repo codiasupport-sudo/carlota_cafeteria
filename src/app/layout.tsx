@@ -13,9 +13,9 @@ const jost = Jost({
 });
 
 export const metadata: Metadata = {
-  title: "Carlota Cafetería — Café de especialidad",
+  title: "La Carlota — Sistema interno",
   description:
-    "Café de especialidad, repostería artesanal y un espacio para quedarse. Visítanos en Carlota Cafetería.",
+    "Sistema interno de La Carlota: punto de venta, pedidos, cocina, caja y seguimiento de delivery.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
