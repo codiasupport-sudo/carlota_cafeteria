@@ -17,7 +17,7 @@ export default function LoginPage() {
             Sistema interno
           </h1>
           <p className="mt-1 text-sm text-mute">
-            Selecciona tu rol y tu nombre para entrar.
+            Selecciona tu rol, tu nombre e ingresa tu código de 4 dígitos.
           </p>
           <LoginForm />
         </div>

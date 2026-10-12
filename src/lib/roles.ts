@@ -1,5 +1,13 @@
 import type { Role } from "./types";
 
+/** Códigos de acceso de prueba por rol (prototipo, sin base de datos) */
+export const ROLE_PINS: Record<Role, string> = {
+  admin: "1234",
+  caja: "2345",
+  mesero: "3456",
+  cocina: "4567",
+};
+
 export interface NavItem {
   href: string;
   label: string;

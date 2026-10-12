@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { USERS } from "@/lib/mock-data";
+import { ROLE_PINS } from "@/lib/roles";
 import { ROLE_LABELS, type Role } from "@/lib/types";
 
 const ROLES: Role[] = ["admin", "caja", "mesero", "cocina"];
@@ -11,12 +12,18 @@ export function LoginForm() {
   const router = useRouter();
   const [role, setRole] = useState<Role | null>(null);
   const [user, setUser] = useState<string | null>(null);
+  const [pin, setPin] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const roleUsers = role ? USERS.filter((u) => u.role === role) : [];
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!role || !user) return;
+    if (pin !== ROLE_PINS[role]) {
+      setError("Código incorrecto para ese rol.");
+      return;
+    }
     const maxAge = 60 * 60 * 12;
     document.cookie = `carlota-role=${role}; path=/; max-age=${maxAge}`;
     document.cookie = `carlota-user=${encodeURIComponent(user)}; path=/; max-age=${maxAge}`;
@@ -37,6 +44,8 @@ export function LoginForm() {
               onClick={() => {
                 setRole(r);
                 setUser(null);
+                setPin("");
+                setError(null);
               }}
               className={`rounded-lg border px-3 py-2.5 text-sm font-medium transition-colors ${
                 role === r
@@ -45,6 +54,9 @@ export function LoginForm() {
               }`}
             >
               {ROLE_LABELS[r]}
+              <span className="mt-0.5 block text-[11px] font-normal opacity-70">
+                código {ROLE_PINS[r]}
+              </span>
             </button>
           ))}
         </div>
@@ -74,16 +86,48 @@ export function LoginForm() {
         </div>
       )}
 
+      {role && (
+        <div>
+          <span className="mb-2 block text-xs font-medium uppercase tracking-wider text-mute">
+            Código de acceso
+          </span>
+          <input
+            type="password"
+            inputMode="numeric"
+            maxLength={4}
+            value={pin}
+            onChange={(e) => {
+              setPin(e.target.value.replace(/\D/g, ""));
+              setError(null);
+            }}
+            placeholder="••••"
+            autoComplete="off"
+            className="w-full rounded-lg border border-ink/15 bg-cream px-3 py-3 text-center text-2xl tracking-[0.5em] outline-none focus:border-wine"
+          />
+          {error && <p className="mt-2 text-sm text-red-700">{error}</p>}
+        </div>
+      )}
+
       <button
         type="submit"
-        disabled={!role || !user}
+        disabled={!role || !user || pin.length !== 4}
         className="w-full rounded-lg bg-wine py-3 font-medium text-cream transition-colors hover:bg-wine-light disabled:cursor-not-allowed disabled:opacity-40"
       >
         Entrar
       </button>
-      <p className="text-center text-xs text-mute">
-        Prototipo — sin contraseña ni base de datos.
-      </p>
+
+      <div className="rounded-lg bg-cream px-4 py-3 text-xs text-mute">
+        <p className="mb-1 font-medium uppercase tracking-wider">
+          Códigos de prueba
+        </p>
+        <p className="grid grid-cols-2 gap-x-4">
+          {ROLES.map((r) => (
+            <span key={r}>
+              {ROLE_LABELS[r]}: <strong className="text-ink">{ROLE_PINS[r]}</strong>
+            </span>
+          ))}
+        </p>
+      </div>
     </form>
   );
 }
