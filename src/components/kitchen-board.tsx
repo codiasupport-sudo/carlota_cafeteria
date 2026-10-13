@@ -9,7 +9,12 @@ import {
 } from "@/lib/types";
 import { PageHeader } from "@/components/ui";
 
-const COLUMNS: { status: OrderStatus; title: string; action: string; next: OrderStatus }[] = [
+const COLUMNS: {
+  status: OrderStatus;
+  title: string;
+  action: string;
+  next: OrderStatus;
+}[] = [
   { status: "pendiente", title: "Pendiente", action: "Tomar pedido", next: "preparando" },
   { status: "preparando", title: "En preparación", action: "Marcar listo", next: "listo" },
   { status: "listo", title: "Listo para entregar", action: "Entregado", next: "entregado" },
@@ -19,6 +24,8 @@ export function KitchenBoard() {
   const [orders, setOrders] = useState<Order[]>(
     ORDERS.filter((o) => o.status !== "pagado")
   );
+  const [draggingId, setDraggingId] = useState<string | null>(null);
+  const [overColumn, setOverColumn] = useState<OrderStatus | null>(null);
 
   function move(id: string, next: OrderStatus) {
     setOrders((prev) =>
@@ -26,19 +33,39 @@ export function KitchenBoard() {
     );
   }
 
+  function handleDrop(status: OrderStatus) {
+    if (draggingId) move(draggingId, status);
+    setDraggingId(null);
+    setOverColumn(null);
+  }
+
   return (
     <>
       <PageHeader
         title="Cocina"
-        subtitle="Pedidos en tiempo real — qué falta por preparar"
-        />
+        subtitle="Pedidos en tiempo real — arrastra las tarjetas entre columnas o usa los botones"
+      />
       <div className="grid gap-4 lg:grid-cols-3">
         {COLUMNS.map((col) => {
           const columnOrders = orders.filter((o) => o.status === col.status);
+          const isOver = overColumn === col.status;
           return (
             <section
               key={col.status}
-              className="rounded-xl border border-ink/10 bg-paper"
+              onDragOver={(e) => {
+                e.preventDefault();
+                setOverColumn(col.status);
+              }}
+              onDragLeave={() => setOverColumn(null)}
+              onDrop={(e) => {
+                e.preventDefault();
+                handleDrop(col.status);
+              }}
+              className={`rounded-xl border transition-colors ${
+                isOver
+                  ? "border-wine bg-wine/5"
+                  : "border-ink/10 bg-paper"
+              }`}
             >
               <header className="flex items-center justify-between border-b border-ink/10 px-4 py-3">
                 <h2 className="font-display font-semibold">{col.title}</h2>
@@ -46,11 +73,23 @@ export function KitchenBoard() {
                   {columnOrders.length}
                 </span>
               </header>
-              <div className="space-y-3 p-3">
+              <div className="min-h-32 space-y-3 p-3">
                 {columnOrders.map((order) => (
                   <article
                     key={order.id}
-                    className="rounded-lg border border-ink/10 bg-cream p-4"
+                    draggable
+                    onDragStart={(e) => {
+                      e.dataTransfer.setData("text/plain", order.id);
+                      e.dataTransfer.effectAllowed = "move";
+                      setDraggingId(order.id);
+                    }}
+                    onDragEnd={() => {
+                      setDraggingId(null);
+                      setOverColumn(null);
+                    }}
+                    className={`cursor-grab rounded-lg border border-ink/10 bg-cream p-4 transition-opacity active:cursor-grabbing ${
+                      draggingId === order.id ? "opacity-40" : ""
+                    }`}
                   >
                     <div className="flex items-center justify-between">
                       <p className="font-semibold">{order.id}</p>
@@ -78,7 +117,7 @@ export function KitchenBoard() {
                 ))}
                 {columnOrders.length === 0 && (
                   <p className="py-8 text-center text-sm text-mute">
-                    Sin pedidos
+                    {isOver ? "Suelta aquí" : "Sin pedidos"}
                   </p>
                 )}
               </div>

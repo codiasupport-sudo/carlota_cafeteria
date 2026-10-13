@@ -5,6 +5,7 @@ import { useState } from "react";
 import { USERS } from "@/lib/mock-data";
 import { ROLE_PINS } from "@/lib/roles";
 import { ROLE_LABELS, type Role } from "@/lib/types";
+import { PinInput } from "@/components/pin-input";
 
 const ROLES: Role[] = ["admin", "caja", "mesero", "cocina"];
 
@@ -91,20 +92,17 @@ export function LoginForm() {
           <span className="mb-2 block text-xs font-medium uppercase tracking-wider text-mute">
             Código de acceso
           </span>
-          <input
-            type="password"
-            inputMode="numeric"
-            maxLength={4}
+          <PinInput
             value={pin}
-            onChange={(e) => {
-              setPin(e.target.value.replace(/\D/g, ""));
+            onChange={(v) => {
+              setPin(v);
               setError(null);
             }}
-            placeholder="••••"
-            autoComplete="off"
-            className="w-full rounded-lg border border-ink/15 bg-cream px-3 py-3 text-center text-2xl tracking-[0.5em] outline-none focus:border-wine"
+            hasError={!!error}
           />
-          {error && <p className="mt-2 text-sm text-red-700">{error}</p>}
+          {error && (
+            <p className="mt-3 text-center text-sm text-red-700">{error}</p>
+          )}
         </div>
       )}
 

@@ -22,11 +22,23 @@ const APP_STYLES: Record<DeliveryApp, string> = {
 export function DeliveryTracker() {
   const [orders, setOrders] = useState<DeliveryOrder[]>(DELIVERY_ORDERS);
   const [showForm, setShowForm] = useState(false);
+  const [search, setSearch] = useState("");
+  const [appFilter, setAppFilter] = useState<DeliveryApp | "todas">("todas");
 
   const rappi = orders.filter((o) => o.app === "rappi");
   const didi = orders.filter((o) => o.app === "didi");
   const abiertos = orders.filter(
     (o) => o.status !== "entregado" && o.status !== "incidencia"
+  );
+
+  const q = search.trim().toLowerCase();
+  const visible = orders.filter(
+    (o) =>
+      (appFilter === "todas" || o.app === appFilter) &&
+      (!q ||
+        o.externalId.toLowerCase().includes(q) ||
+        o.customer.toLowerCase().includes(q) ||
+        o.summary.toLowerCase().includes(q))
   );
 
   function setStatus(id: string, status: DeliveryStatus) {
@@ -76,6 +88,30 @@ export function DeliveryTracker() {
         />
       )}
 
+      <div className="mb-4 flex flex-wrap items-center gap-3">
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Buscar por nº de pedido, cliente o detalle…"
+          className="w-full max-w-sm rounded-lg border border-ink/15 bg-paper px-3 py-2.5 text-sm outline-none focus:border-wine"
+        />
+        <div className="flex gap-2">
+          {(["todas", "rappi", "didi"] as const).map((a) => (
+            <button
+              key={a}
+              onClick={() => setAppFilter(a)}
+              className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+                appFilter === a
+                  ? "bg-wine text-cream"
+                  : "bg-paper text-mute hover:bg-sand"
+              }`}
+            >
+              {a === "todas" ? "Todas" : APP_LABELS[a]}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="overflow-hidden rounded-xl border border-ink/10 bg-paper">
         <table className="w-full text-sm">
           <thead>
@@ -90,7 +126,7 @@ export function DeliveryTracker() {
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => (
+            {visible.map((order) => (
               <tr key={order.id} className="border-b border-ink/5 last:border-0">
                 <td className="px-5 py-3">
                   <span
@@ -125,6 +161,13 @@ export function DeliveryTracker() {
                 </td>
               </tr>
             ))}
+            {visible.length === 0 && (
+              <tr>
+                <td colSpan={7} className="px-5 py-10 text-center text-sm text-mute">
+                  Sin resultados para esta búsqueda.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

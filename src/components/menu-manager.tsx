@@ -10,13 +10,18 @@ export function MenuManager() {
   const [category, setCategory] = useState<string>("Todas");
   const [showNewCategory, setShowNewCategory] = useState(false);
   const [newCategory, setNewCategory] = useState("");
+  const [search, setSearch] = useState("");
 
   const categories = [
     "Todas",
     ...Array.from(new Set(items.map((i) => i.category))),
   ];
-  const visible =
-    category === "Todas" ? items : items.filter((i) => i.category === category);
+  const q = search.trim().toLowerCase();
+  const visible = items.filter(
+    (i) =>
+      (category === "Todas" || i.category === category) &&
+      (!q || i.name.toLowerCase().includes(q))
+  );
 
   function toggleAvailable(id: string) {
     setItems((prev) =>
@@ -60,6 +65,15 @@ export function MenuManager() {
           </button>
         </div>
       )}
+
+      <div className="mb-4">
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Buscar platillo…"
+          className="w-full max-w-sm rounded-lg border border-ink/15 bg-paper px-3 py-2.5 text-sm outline-none focus:border-wine"
+        />
+      </div>
 
       <div className="mb-5 flex flex-wrap gap-2">
         {categories.map((c) => (
@@ -126,7 +140,7 @@ export function MenuManager() {
                   colSpan={6}
                   className="px-5 py-10 text-center text-sm text-mute"
                 >
-                  Categoría nueva — agrega platillos próximamente.
+                  Sin resultados — categoría nueva o búsqueda sin coincidencias.
                 </td>
               </tr>
             )}
