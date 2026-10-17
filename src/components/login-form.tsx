@@ -7,7 +7,7 @@ import { ROLE_PINS } from "@/lib/roles";
 import { ROLE_LABELS, type Role } from "@/lib/types";
 import { PinInput } from "@/components/pin-input";
 
-const ROLES: Role[] = ["admin", "caja", "mesero", "cocina"];
+const ROLES: Role[] = ["admin", "caja", "mesero"];
 
 export function LoginForm() {
   const router = useRouter();
@@ -28,16 +28,17 @@ export function LoginForm() {
     const maxAge = 60 * 60 * 12;
     document.cookie = `carlota-role=${role}; path=/; max-age=${maxAge}`;
     document.cookie = `carlota-user=${encodeURIComponent(user)}; path=/; max-age=${maxAge}`;
-    router.push("/app");
+    // Mesero inicia directamente en la pantalla de pedidos
+    window.location.href = role === "mesero" ? "/app/pedidos" : "/app";
   }
 
   return (
     <form onSubmit={handleSubmit} className="mt-6 space-y-5">
       <div>
-        <span className="mb-2 block text-xs font-medium uppercase tracking-wider text-mute">
-          Rol
+        <span className="mb-2 block text-xs font-semibold uppercase tracking-wider text-mute">
+          1. Selecciona tu perfil operativo
         </span>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
           {ROLES.map((r) => (
             <button
               key={r}
@@ -48,15 +49,15 @@ export function LoginForm() {
                 setPin("");
                 setError(null);
               }}
-              className={`rounded-lg border px-3 py-2.5 text-sm font-medium transition-colors ${
+              className={`min-h-[52px] rounded-xl border p-3 text-left font-medium transition-all active:scale-[0.98] ${
                 role === r
-                  ? "border-wine bg-wine text-cream"
+                  ? "border-wine bg-wine text-cream shadow-sm"
                   : "border-ink/15 bg-cream text-ink hover:border-wine/40"
               }`}
             >
-              {ROLE_LABELS[r]}
-              <span className="mt-0.5 block text-[11px] font-normal opacity-70">
-                código {ROLE_PINS[r]}
+              <div className="font-semibold text-sm">{ROLE_LABELS[r]}</div>
+              <span className="mt-0.5 block text-[11px] font-normal opacity-75">
+                PIN: {ROLE_PINS[r]}
               </span>
             </button>
           ))}
@@ -65,8 +66,8 @@ export function LoginForm() {
 
       {role && (
         <div>
-          <span className="mb-2 block text-xs font-medium uppercase tracking-wider text-mute">
-            Nombre
+          <span className="mb-2 block text-xs font-semibold uppercase tracking-wider text-mute">
+            2. Selecciona tu usuario
           </span>
           <div className="flex flex-wrap gap-2">
             {roleUsers.map((u) => (
@@ -74,10 +75,10 @@ export function LoginForm() {
                 key={u.name}
                 type="button"
                 onClick={() => setUser(u.name)}
-                className={`rounded-full border px-4 py-2 text-sm transition-colors ${
+                className={`min-h-[44px] rounded-full border px-4 py-2 text-sm font-medium transition-all active:scale-95 ${
                   user === u.name
-                    ? "border-wine bg-wine text-cream"
-                    : "border-ink/15 text-ink hover:border-wine/40"
+                    ? "border-wine bg-wine text-cream shadow-sm"
+                    : "border-ink/15 text-ink hover:border-wine/40 bg-paper"
                 }`}
               >
                 {u.name}
@@ -89,8 +90,8 @@ export function LoginForm() {
 
       {role && (
         <div>
-          <span className="mb-2 block text-xs font-medium uppercase tracking-wider text-mute">
-            Código de acceso
+          <span className="mb-2 block text-xs font-semibold uppercase tracking-wider text-mute">
+            3. Ingresa tu código PIN
           </span>
           <PinInput
             value={pin}
@@ -101,7 +102,7 @@ export function LoginForm() {
             hasError={!!error}
           />
           {error && (
-            <p className="mt-3 text-center text-sm text-red-700">{error}</p>
+            <p className="mt-3 text-center text-sm font-medium text-red-700">{error}</p>
           )}
         </div>
       )}
@@ -109,21 +110,24 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={!role || !user || pin.length !== 4}
-        className="w-full rounded-lg bg-wine py-3 font-medium text-cream transition-colors hover:bg-wine-light disabled:cursor-not-allowed disabled:opacity-40"
+        className="min-h-[50px] w-full rounded-xl bg-wine py-3 font-semibold text-cream transition-all hover:bg-wine-light active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40"
       >
-        Entrar
+        Entrar al sistema
       </button>
 
-      <div className="rounded-lg bg-cream px-4 py-3 text-xs text-mute">
-        <p className="mb-1 font-medium uppercase tracking-wider">
-          Códigos de prueba
+      <div className="rounded-xl border border-ink/10 bg-cream/70 p-4 text-xs text-mute">
+        <p className="mb-1.5 font-semibold uppercase tracking-wider text-ink/80">
+          Credenciales de demostración
         </p>
-        <p className="grid grid-cols-2 gap-x-4">
+        <p className="grid grid-cols-1 gap-1 sm:grid-cols-3">
           {ROLES.map((r) => (
             <span key={r}>
               {ROLE_LABELS[r]}: <strong className="text-ink">{ROLE_PINS[r]}</strong>
             </span>
           ))}
+        </p>
+        <p className="mt-2 text-[11px] text-mute/80 italic">
+          Nota: En esta fase de prototipo los accesos son demostrativos para validación funcional.
         </p>
       </div>
     </form>

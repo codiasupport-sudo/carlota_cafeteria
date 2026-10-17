@@ -14,8 +14,6 @@ export const USERS: StaffUser[] = [
   { name: "Camila", role: "mesero" },
   { name: "Andrés", role: "mesero" },
   { name: "Luz", role: "mesero" },
-  { name: "Chef Mario", role: "cocina" },
-  { name: "Doña Elena", role: "cocina" },
 ];
 
 export const MENU_ITEMS: MenuItem[] = [

@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { Sidebar } from "@/components/shell/sidebar";
 import type { Role } from "@/lib/types";
 
-const VALID_ROLES: Role[] = ["admin", "caja", "mesero", "cocina"];
+const VALID_ROLES: Role[] = ["admin", "caja", "mesero"];
 
 export default function AppLayout({
   children,
@@ -28,9 +28,9 @@ async function Session({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen flex-col lg:flex-row bg-cream">
       <Sidebar role={role} user={decodeURIComponent(user)} />
-      <main className="flex-1 overflow-x-auto p-6 lg:p-8">{children}</main>
+      <main className="flex-1 overflow-x-auto p-4 sm:p-6 lg:p-8 pb-28 lg:pb-16">{children}</main>
     </div>
   );
 }

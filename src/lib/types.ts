@@ -1,10 +1,9 @@
-export type Role = "admin" | "caja" | "mesero" | "cocina";
+export type Role = "admin" | "caja" | "mesero";
 
 export const ROLE_LABELS: Record<Role, string> = {
   admin: "Administrador",
   caja: "Caja",
   mesero: "Mesero",
-  cocina: "Cocina",
 };
 
 export type OrderType = "mesa" | "llevar" | "delivery";
@@ -15,6 +14,18 @@ export const ORDER_TYPE_LABELS: Record<OrderType, string> = {
   delivery: "Delivery",
 };
 
+/**
+ * Estados de pedido actuales del prototipo (Fase 1).
+ * 
+ * NOTA ARQUITECTÓNICA PARA FASE 2:
+ * Actualmente OrderStatus mezcla el estado operativo de preparación y entrega
+ * con el estado financiero ("pagado").
+ * En la Fase 2 esto se desacoplará formalmente en:
+ * 1. OperationalStatus: "pendiente" | "preparando" | "listo" | "entregado" | "cancelado"
+ * 2. PaymentStatus: "pendiente" | "pagado" | "anulado"
+ * Esto permitirá que una orden pueda estar "entregada" pero pendiente de pago,
+ * o "pagada" de inmediato en mostrador mientras continúa "en preparación".
+ */
 export type OrderStatus =
   | "pendiente"
   | "preparando"
@@ -25,9 +36,9 @@ export type OrderStatus =
 export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
   pendiente: "Pendiente",
   preparando: "En preparación",
-  listo: "Listo",
-  entregado: "Entregado",
-  pagado: "Pagado",
+  listo: "Listo para entrega",
+  entregado: "Entregado a mesa / cliente",
+  pagado: "Cobrado en caja",
 };
 
 export type PaymentMethod = "efectivo" | "tarjeta" | "transferencia";

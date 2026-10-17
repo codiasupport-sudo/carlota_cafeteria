@@ -1,3 +1,5 @@
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import {
   DELIVERY_ORDERS,
   MENU_ITEMS,
@@ -10,10 +12,19 @@ import {
   PAYMENT_LABELS,
   type OrderType,
   type PaymentMethod,
+  type Role,
 } from "@/lib/types";
 import { PageHeader, StatCard } from "@/components/ui";
 
-export default function ReportesPage() {
+export default async function ReportesPage() {
+  const store = await cookies();
+  const role = store.get("carlota-role")?.value as Role | undefined;
+
+  // Solo Administrador puede ver reportes financieros
+  if (role !== "admin") {
+    redirect(role === "mesero" ? "/app/pedidos" : "/app");
+  }
+
   const cobrados = ORDERS.filter((o) => o.status === "pagado");
 
   const porCanal = (Object.keys(ORDER_TYPE_LABELS) as OrderType[]).map((t) => ({
@@ -46,6 +57,14 @@ export default function ReportesPage() {
   return (
     <>
       <PageHeader title="Reportes" subtitle="Corte del día y ventas por canal" />
+
+      {/* Banner de identificación de datos demostrativos */}
+      <div className="mb-6 rounded-xl border border-amber-300 bg-amber-50/80 px-4 py-3 text-xs text-amber-900">
+        <p className="font-semibold">Indicadores demostrativos (Prototipo Fase 1)</p>
+        <p className="mt-0.5 text-amber-800/90">
+          Los cortes y acumulados son cálculos sobre datos mock locales. No corresponden a conciliación bancaria ni contabilidad real.
+        </p>
+      </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard

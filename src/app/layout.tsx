@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Fraunces, Jost } from "next/font/google";
 import "./globals.css";
 
@@ -12,13 +12,31 @@ const jost = Jost({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export const metadata: Metadata = {
   title: "La Carlota — Sistema interno",
   description:
-    "Sistema interno de La Carlota: punto de venta, pedidos, cocina, caja y seguimiento de delivery.",
+    "Sistema interno de La Carlota: punto de venta, pedidos, caja y seguimiento de delivery.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/logo.jpg", type: "image/jpeg" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/logo.jpg",
+  },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="es"
