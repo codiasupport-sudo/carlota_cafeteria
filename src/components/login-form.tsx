@@ -29,7 +29,9 @@ export function LoginForm() {
     document.cookie = `carlota-role=${role}; path=/; max-age=${maxAge}`;
     document.cookie = `carlota-user=${encodeURIComponent(user)}; path=/; max-age=${maxAge}`;
     // Mesero inicia directamente en la pantalla de pedidos
-    window.location.href = role === "mesero" ? "/app/pedidos" : "/app";
+    const targetUrl = role === "mesero" ? "/app/pedidos" : "/app";
+    router.push(targetUrl);
+    router.refresh();
   }
 
   return (

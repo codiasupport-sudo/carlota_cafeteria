@@ -1,0 +1,248 @@
+
+{
+  "catalogVersion": "2026.1",
+  "business": "La Carlota",
+  "currency": "MXN",
+  "source": "MENÚ LA CARLOTA 2026.pdf",
+  "mode": "demo",
+  "categories": [
+    {
+      "id": "bebidas-frias",
+      "name": "Los más fríos",
+      "sourcePage": 2,
+      "products": [
+        {"id":"bf-americano","name":"Americano","variants":[{"size":"Grande","volumeMl":470,"price":60}]},
+        {"id":"bf-latte","name":"Latte","variants":[{"size":"Grande","volumeMl":470,"price":70},{"size":"Jumbo","volumeMl":946,"price":110}]},
+        {"id":"bf-mazapan","name":"Mazapán","variants":[{"size":"Grande","volumeMl":470,"price":85},{"size":"Jumbo","volumeMl":946,"price":125}]},
+        {"id":"bf-matcha","name":"Matcha","variants":[{"size":"Grande","volumeMl":470,"price":85},{"size":"Jumbo","volumeMl":946,"price":125}]},
+        {"id":"bf-chai","name":"Café Chai","variants":[{"size":"Grande","volumeMl":470,"price":85},{"size":"Jumbo","volumeMl":946,"price":125}]},
+        {"id":"bf-moka","name":"Moka","variants":[{"size":"Grande","volumeMl":470,"price":85},{"size":"Jumbo","volumeMl":946,"price":125}]},
+        {"id":"bf-taro","name":"Taro","variants":[{"size":"Grande","volumeMl":470,"price":85},{"size":"Jumbo","volumeMl":946,"price":125}]},
+        {"id":"bf-chocolate","name":"Chocolate","variants":[{"size":"Grande","volumeMl":470,"price":85},{"size":"Jumbo","volumeMl":946,"price":125}]},
+        {"id":"bf-te-frutos","name":"Té de frutos rojos","variants":[{"size":"Grande","volumeMl":470,"price":70},{"size":"Jumbo","volumeMl":946,"price":100}]},
+        {"id":"bf-latte-sabor","name":"Latte caramelo / vainilla","variants":[{"size":"Grande","volumeMl":470,"price":85},{"size":"Jumbo","volumeMl":946,"price":125}]},
+        {"id":"bf-latte-sugarfree","name":"Latte caramelo sugar free y vainilla","variants":[{"size":"Grande","volumeMl":470,"price":90},{"size":"Jumbo","volumeMl":946,"price":125}]},
+        {"id":"bf-lotus","name":"Lotus","variants":[{"size":"Grande","volumeMl":470,"price":90},{"size":"Jumbo","volumeMl":946,"price":125}]}
+      ]
+    },
+    {
+      "id": "bebidas-calientes",
+      "name": "Bebidas calientes",
+      "sourcePage": 2,
+      "products": [
+        {"id":"bc-espresso-sencillo","name":"Expresso sencillo","variants":[{"size":"Mini","volumeMl":60,"price":50}]},
+        {"id":"bc-espresso-doble","name":"Expresso doble","variants":[{"size":"Mini","volumeMl":60,"price":60}]},
+        {"id":"bc-americano","name":"Americano","variants":[{"size":"Única","price":60}]},
+        {"id":"bc-capuchino","name":"Capuchino","variants":[{"size":"Chico","volumeMl":354,"price":65}]},
+        {"id":"bc-capuchino-sabor","name":"Capuchino caramelo / vainilla","variants":[{"size":"Chico","volumeMl":354,"price":70}]},
+        {"id":"bc-capuchino-sugarfree","name":"Capuchino caramelo / vainilla sugar free","variants":[{"size":"Chico","volumeMl":354,"price":80}]},
+        {"id":"bc-latte","name":"Latte","variants":[{"size":"Chico","volumeMl":354,"price":70}]},
+        {"id":"bc-latte-sugarfree","name":"Latte caramelo / vainilla sugar free","variants":[{"size":"Chico","volumeMl":354,"price":80}]},
+        {"id":"bc-mazapan","name":"Mazapán","variants":[{"size":"Chico","volumeMl":354,"price":70}]},
+        {"id":"bc-matcha","name":"Matcha","variants":[{"size":"Chico","volumeMl":354,"price":70}]},
+        {"id":"bc-chai","name":"Café chai","variants":[{"size":"Chico","volumeMl":354,"price":70}]},
+        {"id":"bc-macchiato","name":"Macchiato","variants":[{"size":"Chico","volumeMl":354,"price":70}]},
+        {"id":"bc-flatwhite","name":"Flat white","variants":[{"size":"Chico","volumeMl":354,"price":70}]},
+        {"id":"bc-chocolate","name":"Chocolate caliente","variants":[{"size":"Chico","volumeMl":354,"price":70}]},
+        {"id":"bc-te","name":"Té de frutos rojos","variants":[{"size":"Chico","volumeMl":354,"price":70}]},
+        {"id":"bc-affogato","name":"Affogato","variants":[{"size":"Única","price":90}]}
+      ]
+    },
+    {
+      "id": "bebidas-casa",
+      "name": "Bebidas de la casa",
+      "sourcePage": 2,
+      "products": [
+        {"id":"casa-charlot","name":"Charlot","description":"Expresso doble con leche y horchata","variants":[{"size":"Grande","volumeMl":470,"price":90},{"size":"Jumbo","volumeMl":946,"price":120}]},
+        {"id":"casa-canela","name":"Dulce Canela","description":"Expresso doble con leche, jarabe de vainilla y canela","variants":[{"size":"Grande","volumeMl":470,"price":90},{"size":"Jumbo","volumeMl":946,"price":120}]},
+        {"id":"casa-chocolate","name":"Sabor a chocolate","description":"Expresso doble con leche, jarabe de vainilla y chocolate","variants":[{"size":"Grande","volumeMl":470,"price":90},{"size":"Jumbo","volumeMl":946,"price":120}]},
+        {"id":"casa-jardin","name":"Jardín de Carlota","description":"Expresso doble con leche, jarabe de frambuesa y zarzamora","variants":[{"size":"Grande","volumeMl":470,"price":90},{"size":"Jumbo","volumeMl":946,"price":120}]}
+      ]
+    },
+    {
+      "id": "frappes",
+      "name": "Frappés",
+      "sourcePage": 3,
+      "products": [
+        {"id":"fr-cafe","name":"Café","variants":[{"size":"Grande","volumeMl":470,"price":70},{"size":"Jumbo","volumeMl":946,"price":100}]},
+        {"id":"fr-chai","name":"Café chai","variants":[{"size":"Grande","volumeMl":470,"price":90},{"size":"Jumbo","volumeMl":946,"price":120}]},
+        {"id":"fr-moka","name":"Moka","variants":[{"size":"Grande","volumeMl":470,"price":90},{"size":"Jumbo","volumeMl":946,"price":120}]},
+        {"id":"fr-caramelo","name":"Caramelo","variants":[{"size":"Grande","volumeMl":470,"price":90},{"size":"Jumbo","volumeMl":946,"price":120}]},
+        {"id":"fr-mazapan","name":"Mazapán","variants":[{"size":"Grande","volumeMl":470,"price":90},{"size":"Jumbo","volumeMl":946,"price":120}]},
+        {"id":"fr-taro","name":"Taro","variants":[{"size":"Grande","volumeMl":470,"price":100},{"size":"Jumbo","volumeMl":946,"price":120}]},
+        {"id":"fr-oreo","name":"Oreo","variants":[{"size":"Grande","volumeMl":470,"price":100},{"size":"Jumbo","volumeMl":946,"price":120}]},
+        {"id":"fr-matcha","name":"Matcha","variants":[{"size":"Grande","volumeMl":470,"price":100},{"size":"Jumbo","volumeMl":946,"price":120}]},
+        {"id":"fr-lotus","name":"Lotus","variants":[{"size":"Grande","volumeMl":470,"price":100},{"size":"Jumbo","volumeMl":946,"price":130}]},
+        {"id":"fr-mamut","name":"Mamut","variants":[{"size":"Grande","volumeMl":470,"price":100},{"size":"Jumbo","volumeMl":946,"price":130}]}
+      ]
+    },
+    {
+      "id": "smoothies-agua",
+      "name": "Smoothies con agua",
+      "sourcePage": 3,
+      "products": [
+        {"id":"sa-fresa","name":"Fresa","variants":[{"size":"Grande","volumeMl":470,"price":70},{"size":"Jumbo","volumeMl":946,"price":110}]},
+        {"id":"sa-mango","name":"Mango","variants":[{"size":"Grande","volumeMl":470,"price":70},{"size":"Jumbo","volumeMl":946,"price":110}]},
+        {"id":"sa-frutos","name":"Frutos rojos","variants":[{"size":"Grande","volumeMl":470,"price":70},{"size":"Jumbo","volumeMl":946,"price":110}]}
+      ]
+    },
+    {
+      "id": "smoothies-leche",
+      "name": "Smoothies con leche",
+      "sourcePage": 3,
+      "products": [
+        {"id":"sl-fresa","name":"Fresa","variants":[{"size":"Grande","volumeMl":470,"price":80},{"size":"Jumbo","volumeMl":946,"price":120}]},
+        {"id":"sl-mango","name":"Mango","variants":[{"size":"Grande","volumeMl":470,"price":80},{"size":"Jumbo","volumeMl":946,"price":120}]},
+        {"id":"sl-frutos","name":"Frutos rojos","variants":[{"size":"Grande","volumeMl":470,"price":80},{"size":"Jumbo","volumeMl":946,"price":120}]}
+      ]
+    },
+    {
+      "id": "chamoyadas",
+      "name": "Chamoyadas",
+      "sourcePage": 3,
+      "products": [
+        {"id":"ch-fresa","name":"Fresa","variants":[{"size":"Grande","volumeMl":470,"price":90},{"size":"Jumbo","volumeMl":946,"price":120}]},
+        {"id":"ch-mango","name":"Mango","variants":[{"size":"Grande","volumeMl":470,"price":90},{"size":"Jumbo","volumeMl":946,"price":120}]},
+        {"id":"ch-frutos","name":"Frutos rojos","variants":[{"size":"Grande","volumeMl":470,"price":90},{"size":"Jumbo","volumeMl":946,"price":120}]}
+      ]
+    },
+    {
+      "id": "refreshers",
+      "name": "Nuestros refreshers",
+      "sourcePage": 3,
+      "products": [
+        {"id":"re-blueberry","name":"Blueberry Açaí","variants":[{"size":"Grande","volumeMl":470,"price":75},{"size":"Jumbo","volumeMl":946,"price":110}]},
+        {"id":"re-lemon","name":"Lemon Raspberry","variants":[{"size":"Grande","volumeMl":470,"price":75},{"size":"Jumbo","volumeMl":946,"price":110}]},
+        {"id":"re-arandano","name":"Arándano sunset","variants":[{"size":"Grande","volumeMl":470,"price":75},{"size":"Jumbo","volumeMl":946,"price":110}]},
+        {"id":"re-mango","name":"Mango maracuyá","variants":[{"size":"Grande","volumeMl":470,"price":75},{"size":"Jumbo","volumeMl":946,"price":110}]}
+      ]
+    },
+    {
+      "id": "panaderia",
+      "name": "Panadería",
+      "sourcePage": 4,
+      "products": [
+        {"id":"pa-chocolatin","name":"Chocolatín","price":60},
+        {"id":"pa-chocolatin-almendrado","name":"Chocolatín Almendrado","price":75},
+        {"id":"pa-croissant-relleno","name":"Crossaint Relleno","description":"Almendra, queso de bola, Nutella y pistache","price":75},
+        {"id":"pa-concha","name":"Concha","price":40},
+        {"id":"pa-torta-cielo","name":"Rebanada de torta de cielo","price":65},
+        {"id":"pa-rol-clasico","name":"Rol Clásico","price":50},
+        {"id":"pa-rol-glaseado","name":"Rol Glaseado","price":60},
+        {"id":"pa-rol-philadelphia","name":"Rol Philadelphia","price":70},
+        {"id":"pa-rol-oreo","name":"Rol Oreo","price":85},
+        {"id":"pa-rol-fresa","name":"Rol fresa","price":85},
+        {"id":"pa-rol-lotus","name":"Rol Lotus","price":85},
+        {"id":"pa-rol-nutella-queso","name":"Rol Nutella y Queso de Bola","price":85},
+        {"id":"pa-rol-dulce-nuez","name":"Rol Dulce de Leche y Nuez","price":85},
+        {"id":"pa-galletas","name":"Galletas","description":"Oreo, M&M's, Kínder, etc.","price":60},
+        {"id":"pa-budin","name":"Budín","price":50}
+      ]
+    },
+    {
+      "id": "postres",
+      "name": "Postres",
+      "sourcePage": 4,
+      "products": [
+        {"id":"po-tiramisu","name":"Vasito de tiramisú","price":60},
+        {"id":"po-queso-nutella","name":"Vasito de queso de bola con Nutella","price":60},
+        {"id":"po-nutella","name":"Vasito de Nutella","price":60},
+        {"id":"po-fudge","name":"Vasito fudge","price":60},
+        {"id":"po-malangas","name":"Malangas 100 grs","price":45},
+        {"id":"po-miniroles","name":"Vaso mini roles","price":85},
+        {"id":"po-tarta","name":"Tarta vasca clásica (220 gr)","price":120},
+        {"id":"po-mostachon","name":"Mostachón","price":85}
+      ]
+    },
+    {
+      "id": "bebidas-embotelladas",
+      "name": "Bebidas embotelladas",
+      "sourcePage": 4,
+      "derivedCategory": true,
+      "products": [
+        {"id":"em-cocacola","name":"Coca cola normal o light","price":35},
+        {"id":"em-agua","name":"Agua embotellada 1 lt","price":15},
+        {"id":"em-mineral","name":"Agua mineral","price":30}
+      ]
+    },
+    {
+      "id": "chapatas",
+      "name": "Chapatas",
+      "sourcePage": 4,
+      "products": [
+        {"id":"cp-champipesto","name":"Champipesto","description":"Chapata de pesto (aderezo preparado con albahaca), queso mozzarella y champiñón.","price":120},
+        {"id":"cp-suprema","name":"Suprema","description":"Chapata de jamón de pavo, queso gouda, mayonesa, un huevo estrellado y trocitos de tocino.","price":120},
+        {"id":"cp-pizzapata","name":"Pizzapata","description":"Chapata con pepperoni, queso mozzarella y salsa de tomate estilo pizza.","price":110},
+        {"id":"cp-tropicarlota","name":"Tropicarlota","description":"Chapata de jamón de pavo, queso gouda, mayonesa, piña y tocino.","price":110},
+        {"id":"cp-tradicional","name":"La tradicional Carlota","description":"Chapata de jamón de pavo, queso gouda, aderezo chipotle, lechuga y tomate.","price":100}
+      ]
+    },
+    {
+      "id": "alimentos",
+      "name": "Alimentos",
+      "sourcePage": 5,
+      "products": [
+        {"id":"al-chilaquiles","name":"Chilaquiles","description":"Con salsa roja o verde a elegir y pollo.","price":139},
+        {"id":"al-huevos","name":"Orden de huevos","description":"Huevos revueltos con frijol, lechuga, tomate y totopos.","price":110},
+        {"id":"al-huevos-longaniza","name":"Orden de huevos con longaniza","description":"Huevos revueltos con longaniza, frijol, lechuga, tomate y totopos.","price":139},
+        {"id":"al-ensalada","name":"Ensalada Carlota","description":"Ensalada de la casa con pollo, fresa, lechuga y crutones.","price":139},
+        {"id":"al-hotcakes","name":"Hot cakes tradicionales","description":"Tres hot cakes con miel y mantequilla.","price":110},
+        {"id":"al-hotcakes-carlota","name":"Hot cakes Carlota","description":"Tres hot cakes con fresa y Nutella.","price":139},
+        {"id":"al-sandwich","name":"Sandwich","description":"Pan Bimbo cero, lechuga, jamón de pavo, tomate y queso panela.","price":75}
+      ]
+    },
+    {
+      "id": "malteadas",
+      "name": "Malteadas",
+      "sourcePage": 5,
+      "products": [
+        {"id":"ma-chocolate","name":"Chocolate","variants":[{"size":"Grande","volumeMl":470,"price":100}]},
+        {"id":"ma-cookies","name":"Cookies and cream","variants":[{"size":"Grande","volumeMl":470,"price":100}]},
+        {"id":"ma-vainilla","name":"Vainilla","variants":[{"size":"Grande","volumeMl":470,"price":100}]}
+      ]
+    },
+    {
+      "id": "extras",
+      "name": "Extras",
+      "sourcePage": 5,
+      "products": [
+        {"id":"ex-huevo","name":"Huevo","price":15},
+        {"id":"ex-espresso","name":"Shot expresso","price":15},
+        {"id":"ex-leche","name":"Cambio de leche de coco o almendra","price":15}
+      ]
+    }
+  ],
+  "catalogNotes": [
+    {
+      "type": "seasonal",
+      "sourcePage": 3,
+      "text": "Pregunta por las bebidas de temporada",
+      "status": "No se inventaron productos de temporada"
+    },
+    {
+      "type": "validation",
+      "sourcePage": 2,
+      "text": "Confirmar tamaños de bebidas calientes cuyos tamaños no están indicados individualmente."
+    },
+    {
+      "type": "validation",
+      "sourcePage": 2,
+      "text": "El americano frío solo muestra precio Grande; no se creó un Jumbo."
+    },
+    {
+      "type": "validation",
+      "sourcePage": 4,
+      "text": "Confirmar si los rellenos de Crossaint Relleno son opciones elegibles al mismo precio."
+    },
+    {
+      "type": "validation",
+      "sourcePage": 4,
+      "text": "Confirmar variantes de galletas y Coca-Cola normal/light."
+    },
+    {
+      "type": "validation",
+      "sourcePage": 5,
+      "text": "Confirmar qué productos admiten los extras y cómo se aplican."
+    }
+  ]
+}

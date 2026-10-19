@@ -1,25 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { NAV_ITEMS } from "@/lib/roles";
 import { ROLE_LABELS, type Role } from "@/lib/types";
 
 export function Sidebar({ role, user }: { role: Role; user: string }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const items = NAV_ITEMS.filter((item) => item.roles.includes(role));
-
-  // Cerrar el drawer al cambiar de ruta
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [pathname]);
 
   function logout() {
     document.cookie = "carlota-role=; path=/; max-age=0";
     document.cookie = "carlota-user=; path=/; max-age=0";
-    window.location.href = "/login";
+    router.push("/login");
   }
 
   return (
@@ -139,6 +135,7 @@ export function Sidebar({ role, user }: { role: Role; user: string }) {
                   <Link
                     key={item.href}
                     href={item.href}
+                    onClick={() => setMobileOpen(false)}
                     className={`flex min-h-[48px] items-center gap-3.5 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors ${
                       active
                         ? "bg-wine-light text-cream shadow-xs"
