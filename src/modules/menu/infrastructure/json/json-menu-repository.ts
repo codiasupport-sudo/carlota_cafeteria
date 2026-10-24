@@ -5,8 +5,8 @@ import type { MenuReadRepository, VisitRepository } from "../../ports/menu-repos
 
 export class JsonMenuRepository implements MenuReadRepository, VisitRepository {
   readonly visits: Date[] = [];
-  private readonly settings: BusinessSettings;
-  private readonly catalog: Category[];
+  protected readonly settings: BusinessSettings;
+  protected readonly catalog: Category[];
 
   constructor(json: unknown, overrides: Partial<BusinessSettings> = {}) {
     const result = validateMenuImport(json);

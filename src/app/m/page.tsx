@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import { connection } from "next/server";
 import { getPublicMenu } from "@/modules/menu/application/get-public-menu";
 import { getMenuRepository } from "@/modules/menu/infrastructure/repository-factory";
 import { BusinessFooter } from "@/modules/menu/ui/public/BusinessFooter";
@@ -5,7 +7,17 @@ import { MenuHeader } from "@/modules/menu/ui/public/MenuHeader";
 import { MenuView } from "@/modules/menu/ui/public/MenuView";
 import { VisitBeacon } from "@/modules/menu/ui/public/VisitBeacon";
 
-export default async function PublicMenuPage() {
+export default function PublicMenuPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-carlota-red" />}>
+      <PublicMenu />
+    </Suspense>
+  );
+}
+
+// Dinámico: el panel /app/menu cambia el catálogo y el comensal debe ver siempre la versión vigente.
+async function PublicMenu() {
+  await connection();
   const menu = await getPublicMenu(getMenuRepository());
 
   if (menu.unpublished) {

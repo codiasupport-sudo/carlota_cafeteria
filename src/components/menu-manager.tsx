@@ -1,148 +1,358 @@
 "use client";
 
-import { useState } from "react";
-import { DIGITAL_MENU_URL } from "@/lib/config";
-import type { Role } from "@/lib/types";
+import Link from "next/link";
+import { useMemo, useState, useTransition } from "react";
+import {
+  moveCategory,
+  setCategoryVisibility,
+  setProductArchived,
+  setProductAvailability,
+  setProductVisibility,
+  type ActionResult,
+} from "@/app/app/menu/actions";
 import { PageHeader } from "@/components/ui";
+import { CategoryDialog, PricesDialog, ProductDialog, ghostBtn, inputClass, primaryBtn } from "@/components/menu-admin/dialogs";
+import { DIGITAL_MENU_URL } from "@/lib/config";
+import { TAG_LABELS, formatPrice, productMatches, type Category, type Product } from "@/modules/menu/domain/catalog";
+import { canManageCatalog, type CatalogRole } from "@/modules/menu/domain/catalog-admin";
+import type { CatalogMode } from "@/modules/menu/infrastructure/repository-factory";
 
-export function MenuManager({ role = "admin" }: { role?: Role } = {}) {
-  void role;
+type Filter = "todos" | "agotados" | "ocultos" | "archivados";
+
+type Dialog =
+  | { kind: "category"; category: Category | null }
+  | { kind: "product"; product: Product | null; categoryId: string }
+  | { kind: "prices"; product: Product; category: Category }
+  | null;
+
+const MODE_BANNER: Record<CatalogMode, { tone: string; title: string; text: string }> = {
+  supabase: {
+    tone: "border-emerald-300 bg-emerald-50 text-emerald-950",
+    title: "Conectado a Supabase",
+    text: "Los cambios se guardan de forma persistente y se reflejan en el menú público (/m).",
+  },
+  "supabase-readonly": {
+    tone: "border-red-300 bg-red-50 text-red-950",
+    title: "Solo lectura: falta la llave de servidor",
+    text: "Supabase está configurado pero no existe SUPABASE_SERVICE_ROLE_KEY en el servidor. No se puede guardar.",
+  },
+  "demo-memory": {
+    tone: "border-amber-300 bg-amber-50 text-amber-950",
+    title: "Modo demo (sin base de datos)",
+    text: "Los cambios viven solo en la memoria del servidor y se pierden al reiniciarlo. No son datos de producción.",
+  },
+  "demo-readonly": {
+    tone: "border-red-300 bg-red-50 text-red-950",
+    title: "Modo demo de solo lectura",
+    text: "No hay Supabase configurado en este entorno, así que las escrituras están desactivadas.",
+  },
+};
+
+const ROLE_NOTE: Partial<Record<CatalogRole, string>> = {
+  cashier: "Perfil Caja: consulta de catálogo y disponibilidad. No puedes modificarlo.",
+  waiter: "Perfil Mesero: solo consulta del catálogo.",
+};
+
+export function MenuManager({
+  role,
+  mode,
+  categories,
+  loadError,
+}: {
+  role: CatalogRole;
+  mode: CatalogMode;
+  categories: Category[];
+  loadError: string | null;
+}) {
+  const canEdit = canManageCatalog(role);
+  const writable = canEdit && (mode === "supabase" || mode === "demo-memory");
+  const banner = MODE_BANNER[mode];
+
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState<Filter>("todos");
+  const [dialog, setDialog] = useState<Dialog>(null);
+  const [notice, setNotice] = useState<{ ok: boolean; text: string } | null>(null);
   const [copied, setCopied] = useState(false);
+  const [pending, start] = useTransition();
 
-  async function handleCopyLink() {
+  const sorted = useMemo(() => [...categories].sort((a, b) => a.sort - b.sort), [categories]);
+  const archivedCount = categories.reduce((n, c) => n + c.products.filter((p) => p.archivedAt).length, 0);
+
+  const report = (result: ActionResult) => setNotice({ ok: result.ok, text: result.ok ? result.message : result.error });
+  const run = (action: () => Promise<ActionResult>) => start(async () => report(await action()));
+
+  function visibleProducts(c: Category): Product[] {
+    return c.products
+      .filter((p) => {
+        if (filter === "archivados") return Boolean(p.archivedAt);
+        if (p.archivedAt) return false;
+        if (filter === "agotados") return !p.available;
+        if (filter === "ocultos") return !p.showInMenu || !c.showInMenu;
+        return true;
+      })
+      .filter((p) => productMatches(p, query))
+      .sort((a, b) => a.sort - b.sort);
+  }
+
+  async function copyLink() {
     try {
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(DIGITAL_MENU_URL);
-      } else {
-        const textArea = document.createElement("textarea");
-        textArea.value = DIGITAL_MENU_URL;
-        textArea.style.position = "fixed";
-        textArea.style.left = "-999999px";
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        document.execCommand("copy");
-        textArea.remove();
-      }
+      await navigator.clipboard.writeText(DIGITAL_MENU_URL);
       setCopied(true);
       setTimeout(() => setCopied(false), 3000);
-    } catch (err) {
-      console.error("Error al copiar enlace:", err);
+    } catch {
+      setNotice({ ok: false, text: "No se pudo copiar el enlace. Cópialo manualmente." });
     }
   }
 
+  const filters: { id: Filter; label: string }[] = [
+    { id: "todos", label: "Todos" },
+    { id: "agotados", label: "Agotados" },
+    { id: "ocultos", label: "Ocultos" },
+    ...(canEdit ? [{ id: "archivados" as const, label: `Archivados (${archivedCount})` }] : []),
+  ];
+
   return (
-    <div className="space-y-6">
-      <PageHeader
-        title="Menú digital"
-        subtitle="Acceso al catálogo público de comensales disponible para consulta y escaneo por QR."
-      />
-
-      {/* Tarjeta principal de acceso y compartición */}
-      <div className="rounded-2xl border border-ink/10 bg-paper p-6 sm:p-8 shadow-sm">
-        <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-wine/20 bg-wine/10 px-3.5 py-1 text-xs font-semibold text-wine mb-4">
-            <span>🌐</span>
-            <span>Aplicación Web Independiente</span>
-          </div>
-
-          <h2 className="font-display text-2xl sm:text-3xl font-bold text-ink">
-            Catálogo y Menú Digital La Carlota
-          </h2>
-
-          <p className="mt-2 text-sm sm:text-base text-mute leading-relaxed">
-            Los comensales acceden a este menú desde sus dispositivos móviles escaneando los códigos QR de las mesas o mediante el enlace web directo.
-          </p>
-
-          {/* Acciones principales */}
-          <div className="mt-6 flex flex-wrap items-center gap-3">
-            <a
-              href={DIGITAL_MENU_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex min-h-[48px] items-center justify-center gap-2.5 rounded-xl bg-wine px-6 py-3 text-sm font-semibold text-cream shadow-md transition-all hover:bg-wine-light active:scale-95 focus:outline-hidden focus:ring-3 focus:ring-wine/40"
-              aria-label="Abrir menú digital en pestaña nueva"
-            >
-              <span>Abrir menú digital</span>
-              <span className="text-base" aria-hidden="true">↗</span>
-            </a>
-
+    <div className="space-y-5">
+      <PageHeader title="Menú y catálogo" subtitle="Categorías, productos, precios y disponibilidad del menú público.">
+        {writable && (
+          <div className="flex flex-wrap gap-2">
+            <button type="button" className={ghostBtn} onClick={() => setDialog({ kind: "category", category: null })}>
+              + Categoría
+            </button>
             <button
               type="button"
-              onClick={handleCopyLink}
-              className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl border border-ink/20 bg-cream/60 px-5 py-3 text-sm font-semibold text-ink transition-all hover:bg-cream hover:border-ink/30 active:scale-95 focus:outline-hidden focus:ring-3 focus:ring-wine/20"
-              aria-label="Copiar enlace del menú digital al portapapeles"
+              className={primaryBtn}
+              disabled={sorted.length === 0}
+              onClick={() => setDialog({ kind: "product", product: null, categoryId: sorted[0]?.id ?? "" })}
             >
-              <span>{copied ? "✓" : "📋"}</span>
-              <span>{copied ? "¡Enlace copiado!" : "Copiar enlace"}</span>
+              + Producto
             </button>
           </div>
+        )}
+      </PageHeader>
 
-          {/* Enlace en texto para mayor transparencia */}
-          <div className="mt-4 flex items-center gap-2 text-xs text-mute font-mono break-all bg-cream/40 p-2.5 rounded-lg border border-ink/5">
-            <span className="font-sans text-ink/70 shrink-0 font-medium">URL:</span>
-            <span className="select-all">{DIGITAL_MENU_URL}</span>
-          </div>
-
-          {/* Nota regulatoria y arquitectónica */}
-          <div className="mt-6 rounded-xl border border-amber-300 bg-amber-50/80 p-4 text-xs text-amber-950">
-            <p className="font-semibold flex items-center gap-1.5">
-              <span>ℹ️</span>
-              <span>Nota de operación:</span>
-            </p>
-            <p className="mt-1 text-amber-900/90 leading-relaxed">
-              El menú se administra y publica desde una aplicación independiente. Los cambios de disponibilidad inmediata en el POS no alteran la versión pública hasta su sincronización formal.
-            </p>
-          </div>
-        </div>
+      <div className={`rounded-xl border p-3 text-sm ${banner.tone}`} role="status">
+        <p className="font-semibold">{banner.title}</p>
+        <p className="mt-0.5 text-xs leading-relaxed">{banner.text}</p>
       </div>
-
-      {/* Vista previa visual no interactiva */}
-      <div className="rounded-2xl border border-ink/10 bg-paper p-6 shadow-sm">
-        <h3 className="font-display text-lg font-semibold text-ink mb-3">
-          Vista previa del menú para comensal
-        </h3>
-        <p className="text-xs text-mute mb-5">
-          Diseño optimizado para pantallas táctiles de celulares (desde 320 px hasta iPad).
+      {ROLE_NOTE[role] && <p className="rounded-xl border border-ink/10 bg-paper px-3 py-2 text-xs text-mute">{ROLE_NOTE[role]}</p>}
+      {loadError && (
+        <p role="alert" className="rounded-xl border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-900">
+          {loadError}
         </p>
+      )}
+      <div aria-live="polite" className="min-h-0">
+        {notice && (
+          <p className={`rounded-xl border px-3 py-2 text-sm ${notice.ok ? "border-emerald-300 bg-emerald-50 text-emerald-900" : "border-red-300 bg-red-50 text-red-900"}`}>
+            {notice.text}
+          </p>
+        )}
+      </div>
 
-        <div className="mx-auto max-w-sm rounded-2xl border-4 border-wine/30 bg-[#62110D] p-4 text-white shadow-lg">
-          <div className="text-center pb-3 border-b border-white/20">
-            <p className="text-xs uppercase tracking-widest text-white/80 font-medium">
-              La Carlota · Menú
-            </p>
-            <p className="font-serif italic text-lg text-cream mt-0.5">
-              Sabores que se quedan contigo
-            </p>
-          </div>
+      <div className="flex flex-wrap items-center gap-2 rounded-xl border border-ink/10 bg-paper p-3 text-sm">
+        <span className="text-mute">Menú público:</span>
+        <Link href="/m" target="_blank" className="font-semibold text-wine underline-offset-2 hover:underline">
+          Ver /m ↗
+        </Link>
+        <a href={DIGITAL_MENU_URL} target="_blank" rel="noopener noreferrer" className="font-semibold text-wine underline-offset-2 hover:underline">
+          Sitio publicado ↗
+        </a>
+        <button type="button" onClick={copyLink} className="ml-auto min-h-[44px] rounded-lg px-3 text-xs font-semibold text-ink hover:bg-cream">
+          {copied ? "✓ Enlace copiado" : "Copiar enlace"}
+        </button>
+      </div>
 
-          <div className="mt-3 space-y-2 text-xs">
-            <div className="flex justify-between items-center bg-white/10 p-2 rounded-lg">
-              <span className="font-medium">☕ Bebidas calientes y frías</span>
-              <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded">15 Categorías</span>
-            </div>
-            <div className="flex justify-between items-center bg-white/10 p-2 rounded-lg">
-              <span className="font-medium">⭐ Los más pedidos</span>
-              <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded">Destacados</span>
-            </div>
-            <div className="flex justify-between items-center bg-white/10 p-2 rounded-lg">
-              <span className="font-medium">🔍 Búsqueda rápida de platillos</span>
-              <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded">Filtros</span>
-            </div>
-          </div>
-
-          <div className="mt-4 pt-3 border-t border-white/20 text-center">
-            <a
-              href={DIGITAL_MENU_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block w-full py-2 bg-white text-[#62110D] text-xs font-bold rounded-lg hover:bg-cream transition-colors text-center"
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <input
+          type="search"
+          className={`${inputClass} sm:max-w-xs`}
+          placeholder="Buscar producto…"
+          aria-label="Buscar producto"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Filtrar productos">
+          {filters.map((f) => (
+            <button
+              key={f.id}
+              type="button"
+              aria-pressed={filter === f.id}
+              onClick={() => setFilter(f.id)}
+              className={`min-h-[44px] rounded-full border px-4 text-sm font-medium ${filter === f.id ? "border-wine bg-wine text-cream" : "border-ink/20 bg-paper text-ink"}`}
             >
-              Ver en vivo en Vercel ↗
-            </a>
-          </div>
+              {f.label}
+            </button>
+          ))}
         </div>
       </div>
+
+      {sorted.length === 0 && !loadError && <p className="rounded-xl border border-ink/10 bg-paper p-6 text-center text-sm text-mute">Todavía no hay categorías.</p>}
+
+      <div className={`space-y-5 ${pending ? "opacity-70" : ""}`} aria-busy={pending}>
+        {sorted.map((category, index) => {
+          const products = visibleProducts(category);
+          const filtering = filter !== "todos" || query.trim() !== "";
+          if (filtering && products.length === 0) return null;
+          return (
+            <section key={category.id} className="overflow-hidden rounded-2xl border border-ink/10 bg-paper shadow-sm">
+              <header className="flex flex-wrap items-center gap-2 border-b border-ink/10 bg-cream/60 px-4 py-3">
+                <div className="min-w-0 flex-1">
+                  <h2 className="font-display text-lg font-semibold text-ink">
+                    {category.name}
+                    {!category.showInMenu && <span className="ml-2 rounded-full bg-zinc-200 px-2 py-0.5 align-middle text-xs font-medium text-zinc-700">Oculta</span>}
+                  </h2>
+                  <p className="text-xs text-mute">
+                    {category.products.filter((p) => !p.archivedAt).length} productos
+                    {category.sizes.length > 0 && ` · Tallas: ${category.sizes.map((s) => s.label).join(", ")}`}
+                  </p>
+                </div>
+                {writable && (
+                  <div className="flex flex-wrap gap-1.5">
+                    <IconBtn label={`Subir ${category.name}`} disabled={index === 0 || pending} onClick={() => run(() => moveCategory(category.id, "up"))}>
+                      ↑
+                    </IconBtn>
+                    <IconBtn label={`Bajar ${category.name}`} disabled={index === sorted.length - 1 || pending} onClick={() => run(() => moveCategory(category.id, "down"))}>
+                      ↓
+                    </IconBtn>
+                    <button type="button" className={ghostBtn} disabled={pending} onClick={() => run(() => setCategoryVisibility(category.id, !category.showInMenu))}>
+                      {category.showInMenu ? "Ocultar" : "Mostrar"}
+                    </button>
+                    <button type="button" className={ghostBtn} onClick={() => setDialog({ kind: "category", category })}>
+                      Editar
+                    </button>
+                    <button type="button" className={ghostBtn} onClick={() => setDialog({ kind: "product", product: null, categoryId: category.id })}>
+                      + Producto
+                    </button>
+                  </div>
+                )}
+              </header>
+
+              {products.length === 0 ? (
+                <p className="px-4 py-4 text-sm text-mute">Sin productos en esta categoría.</p>
+              ) : (
+                <ul className="divide-y divide-ink/10">
+                  {products.map((product) => (
+                    <ProductRow
+                      key={product.id}
+                      product={product}
+                      category={category}
+                      writable={writable}
+                      pending={pending}
+                      onEdit={() => setDialog({ kind: "product", product, categoryId: category.id })}
+                      onPrices={() => setDialog({ kind: "prices", product, category })}
+                      onAvailability={() => run(() => setProductAvailability(product.id, !product.available))}
+                      onVisibility={() => run(() => setProductVisibility(product.id, !product.showInMenu))}
+                      onArchive={() => run(() => setProductArchived(product.id, !product.archivedAt))}
+                    />
+                  ))}
+                </ul>
+              )}
+            </section>
+          );
+        })}
+      </div>
+
+      {dialog?.kind === "category" && <CategoryDialog category={dialog.category} onClose={() => setDialog(null)} done={report} />}
+      {dialog?.kind === "product" && (
+        <ProductDialog categories={sorted} product={dialog.product} defaultCategoryId={dialog.categoryId} onClose={() => setDialog(null)} done={report} />
+      )}
+      {dialog?.kind === "prices" && <PricesDialog category={dialog.category} product={dialog.product} onClose={() => setDialog(null)} done={report} />}
     </div>
+  );
+}
+
+function IconBtn({ label, disabled, onClick, children }: { label: string; disabled: boolean; onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button type="button" aria-label={label} disabled={disabled} onClick={onClick} className={`${ghostBtn} min-w-[44px] px-0`}>
+      {children}
+    </button>
+  );
+}
+
+function Chip({ tone, children }: { tone: string; children: React.ReactNode }) {
+  return <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${tone}`}>{children}</span>;
+}
+
+function ProductRow({
+  product,
+  category,
+  writable,
+  pending,
+  onEdit,
+  onPrices,
+  onAvailability,
+  onVisibility,
+  onArchive,
+}: {
+  product: Product;
+  category: Category;
+  writable: boolean;
+  pending: boolean;
+  onEdit: () => void;
+  onPrices: () => void;
+  onAvailability: () => void;
+  onVisibility: () => void;
+  onArchive: () => void;
+}) {
+  const priceSlots = category.sizes.length
+    ? category.sizes.map((s) => ({ label: s.label, price: product.prices[s.key] }))
+    : [{ label: "", price: product.prices.unico }];
+
+  return (
+    <li className={`px-4 py-3 ${product.archivedAt ? "bg-zinc-50" : ""}`}>
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div className="min-w-0 flex-1">
+          <p className="font-semibold text-ink">{product.name}</p>
+          {product.description && <p className="mt-0.5 line-clamp-2 text-xs text-mute">{product.description}</p>}
+          <div className="mt-1.5 flex flex-wrap gap-1.5">
+            {product.archivedAt && <Chip tone="bg-zinc-200 text-zinc-700">Archivado</Chip>}
+            {!product.available && <Chip tone="bg-red-100 text-red-800">Agotado</Chip>}
+            {product.available && !product.archivedAt && <Chip tone="bg-emerald-100 text-emerald-800">Disponible</Chip>}
+            {!product.showInMenu && <Chip tone="bg-zinc-200 text-zinc-700">Oculto del menú</Chip>}
+            {product.tags.map((t) => (
+              <Chip key={t} tone="bg-wine/10 text-wine">
+                {TAG_LABELS[t]}
+              </Chip>
+            ))}
+          </div>
+        </div>
+        <dl className="flex flex-wrap gap-x-4 gap-y-1 text-right text-sm tabular-nums">
+          {priceSlots.map((slot, i) => (
+            <div key={slot.label || i}>
+              {slot.label && <dt className="text-xs text-mute">{slot.label}</dt>}
+              <dd className="font-semibold text-ink">{formatPrice(slot.price)}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+
+      {writable && (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {product.archivedAt ? (
+            <button type="button" className={ghostBtn} disabled={pending} onClick={onArchive}>
+              Restaurar
+            </button>
+          ) : (
+            <>
+              <button type="button" className={ghostBtn} disabled={pending} onClick={onAvailability}>
+                {product.available ? "Marcar agotado" : "Marcar disponible"}
+              </button>
+              <button type="button" className={ghostBtn} disabled={pending} onClick={onVisibility}>
+                {product.showInMenu ? "Ocultar del menú" : "Mostrar en menú"}
+              </button>
+              <button type="button" className={ghostBtn} onClick={onPrices}>
+                Precios
+              </button>
+              <button type="button" className={ghostBtn} onClick={onEdit}>
+                Editar
+              </button>
+              <button type="button" className={ghostBtn} disabled={pending} onClick={onArchive}>
+                Archivar
+              </button>
+            </>
+          )}
+        </div>
+      )}
+    </li>
   );
 }
