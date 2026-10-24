@@ -29,3 +29,13 @@ body {
   background: var(--color-cream);
   color: var(--color-ink);
 }
+
+/* Oculta la barra de desplazamiento nativa sin bloquear el scroll táctil ni con teclado. */
+.scrollbar-hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}

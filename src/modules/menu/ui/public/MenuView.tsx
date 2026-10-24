@@ -177,7 +177,7 @@ function Favorites({ items, onPick }: { items: { category: Category; product: Pr
       <h2 id="fav-title" className="flex items-center gap-2 px-4 font-script text-[30px] leading-tight">
         Los más pedidos <Star className="h-5 w-5" />
       </h2>
-      <ul className="no-scrollbar mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-4 px-4 pb-1">
+      <ul className="scrollbar-hidden mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-4 px-4 pb-1">
         {items.map(({ category, product }) => (
           <li key={product.id} className="snap-start">
             <button
@@ -269,12 +269,32 @@ function CategorySheet({
   );
 }
 
+/** Flecha táctil (44 px) sobre el borde de la barra; solo existe en el DOM cuando hay más categorías de ese lado. */
+function RailArrow({ side, visible, onClick }: { side: "left" | "right"; visible: boolean; onClick: () => void }) {
+  if (!visible) return null;
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={side === "left" ? "Ver categorías anteriores" : "Ver más categorías"}
+      className={`absolute top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-carlota-wine shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
+        side === "left" ? "left-0" : "right-0"
+      }`}
+    >
+      <svg aria-hidden viewBox="0 0 24 24" className={`h-5 w-5 fill-none stroke-current ${side === "left" ? "rotate-180" : ""}`} strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+  );
+}
+
 export function MenuView({ categories }: { categories: Category[] }) {
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(categories[0]?.id ?? "");
   const [sheetOpen, setSheetOpen] = useState(false);
   const navRef = useRef<HTMLDivElement>(null);
   const lockRef = useRef(0);
+  const [edges, setEdges] = useState({ left: false, right: false });
 
   const searching = query.trim().length > 0;
 
@@ -312,12 +332,42 @@ export function MenuView({ categories }: { categories: Category[] }) {
     return () => observer.disconnect();
   }, [visible]);
 
-  // Mantiene el chip activo a la vista dentro de la barra horizontal.
+  // Detecta si hay más categorías a cada lado para mostrar degradados y flechas solo cuando hacen falta.
+  const updateEdges = useCallback(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+    const left = nav.scrollLeft > 1;
+    const right = nav.scrollLeft + nav.clientWidth < nav.scrollWidth - 1;
+    setEdges((cur) => (cur.left === left && cur.right === right ? cur : { left, right }));
+  }, []);
+
+  useEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+    updateEdges();
+    nav.addEventListener("scroll", updateEdges, { passive: true });
+    const observer = new ResizeObserver(updateEdges);
+    observer.observe(nav);
+    return () => {
+      nav.removeEventListener("scroll", updateEdges);
+      observer.disconnect();
+    };
+  }, [updateEdges, visible]);
+
+  const scrollBehavior = (): ScrollBehavior =>
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+
+  const scrollRail = (direction: -1 | 1) => {
+    const nav = navRef.current;
+    nav?.scrollBy({ left: direction * nav.clientWidth * 0.7, behavior: scrollBehavior() });
+  };
+
+  // Mantiene el chip activo a la vista (centrado) dentro de la barra horizontal.
   useEffect(() => {
     const nav = navRef.current;
     const chip = nav?.querySelector<HTMLElement>(`[data-chip="${active}"]`);
     if (!nav || !chip) return;
-    nav.scrollTo({ left: chip.offsetLeft - nav.clientWidth / 2 + chip.clientWidth / 2, behavior: "smooth" });
+    nav.scrollTo({ left: chip.offsetLeft - nav.clientWidth / 2 + chip.clientWidth / 2, behavior: scrollBehavior() });
   }, [active]);
 
   const goTo = useCallback((id: string) => {
@@ -346,17 +396,25 @@ export function MenuView({ categories }: { categories: Category[] }) {
             Categorías
           </button>
           <div className="relative min-w-0 flex-1">
-            <div ref={navRef} role="tablist" aria-label="Categorías" className="no-scrollbar flex gap-2 overflow-x-auto pr-8">
+            <nav
+              ref={navRef}
+              aria-label="Categorías"
+              className="scrollbar-hidden flex gap-2 overflow-x-auto scroll-smooth"
+              style={{
+                maskImage: `linear-gradient(to right, ${edges.left ? "transparent, #000 40px" : "#000, #000"}, ${edges.right ? "#000 calc(100% - 40px), transparent" : "#000, #000"})`,
+                WebkitMaskImage: `linear-gradient(to right, ${edges.left ? "transparent, #000 40px" : "#000, #000"}, ${edges.right ? "#000 calc(100% - 40px), transparent" : "#000, #000"})`,
+              }}
+            >
               {visible.map(({ category }) => {
                 const isActive = category.id === active;
                 return (
                   <button
                     key={category.id}
+                    type="button"
                     data-chip={category.id}
-                    role="tab"
-                    aria-selected={isActive}
+                    aria-current={isActive ? "true" : undefined}
                     onClick={() => goTo(category.id)}
-                    className={`min-h-[48px] shrink-0 whitespace-nowrap rounded-full border px-4 text-sm font-medium transition-colors ${
+                    className={`min-h-[48px] shrink-0 whitespace-nowrap rounded-full border px-4 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
                       isActive ? "border-white bg-white text-carlota-wine" : "border-carlota-line text-white"
                     }`}
                   >
@@ -364,8 +422,9 @@ export function MenuView({ categories }: { categories: Category[] }) {
                   </button>
                 );
               })}
-            </div>
-            <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-carlota-wine to-transparent" />
+            </nav>
+            <RailArrow side="left" visible={edges.left} onClick={() => scrollRail(-1)} />
+            <RailArrow side="right" visible={edges.right} onClick={() => scrollRail(1)} />
           </div>
         </div>
       </div>
