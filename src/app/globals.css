@@ -11,8 +11,18 @@
   --color-ink: #2b1713;
   --color-mute: #8a7668;
 
+  /* Tokens oficiales del Menú Digital La Carlota */
+  --color-carlota-red: #990a0a;
+  --color-carlota-wine: #62110d;
+  --color-carlota-cream: #fbf3ee;
+  --color-carlota-line: rgba(255, 255, 255, 0.35);
+  --color-carlota-card: rgba(0, 0, 0, 0.08);
+
+  --radius-card: 14px;
+
   --font-sans: var(--font-jost), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-fraunces), Georgia, serif;
+  --font-script: var(--font-script), cursive;
 }
 
 body {

@@ -1,0 +1,875 @@
+{
+  "_comentario": "Menú inicial de La Carlota capturado del PDF 2026. Precios en pesos MXN. 'unico' = precio sin tamaño. Se carga una sola vez con el importador; después el dueño lo administra desde su panel.",
+  "business": {
+    "name": "La Carlota",
+    "tagline": "Sabores que se quedan contigo",
+    "currency": "MXN",
+    "branding": {
+      "logo": "logo.jpeg",
+      "primary": "#62110D",
+      "accent": "#990A0A",
+      "text": "#FFFFFF",
+      "font_titles": "script (tipo Pacifico)",
+      "font_body": "Poppins"
+    }
+  },
+  "categories": [
+    {
+      "name": "Los más fríos",
+      "sizes": [
+        {
+          "key": "grande",
+          "label": "Grande",
+          "detail": "470 ml"
+        },
+        {
+          "key": "jumbo",
+          "label": "Jumbo",
+          "detail": "946 ml"
+        }
+      ],
+      "items": [
+        {
+          "name": "Americano",
+          "prices": {
+            "grande": 60
+          }
+        },
+        {
+          "name": "Latte",
+          "prices": {
+            "grande": 70,
+            "jumbo": 110
+          },
+          "tags": [
+            "recomendado"
+          ]
+        },
+        {
+          "name": "Mazapán",
+          "prices": {
+            "grande": 85,
+            "jumbo": 125
+          }
+        },
+        {
+          "name": "Matcha",
+          "prices": {
+            "grande": 85,
+            "jumbo": 125
+          },
+          "tags": [
+            "recomendado"
+          ]
+        },
+        {
+          "name": "Café chai",
+          "prices": {
+            "grande": 85,
+            "jumbo": 125
+          },
+          "tags": [
+            "recomendado"
+          ]
+        },
+        {
+          "name": "Moka",
+          "prices": {
+            "grande": 85,
+            "jumbo": 125
+          }
+        },
+        {
+          "name": "Taro",
+          "prices": {
+            "grande": 85,
+            "jumbo": 125
+          }
+        },
+        {
+          "name": "Chocolate",
+          "prices": {
+            "grande": 85,
+            "jumbo": 125
+          }
+        },
+        {
+          "name": "Té de frutos rojos",
+          "prices": {
+            "grande": 70,
+            "jumbo": 100
+          }
+        },
+        {
+          "name": "Latte caramelo / vainilla",
+          "prices": {
+            "grande": 85,
+            "jumbo": 125
+          }
+        },
+        {
+          "name": "Latte caramelo sugar free y vainilla",
+          "prices": {
+            "grande": 90,
+            "jumbo": 125
+          }
+        },
+        {
+          "name": "Lotus",
+          "prices": {
+            "grande": 90,
+            "jumbo": 125
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bebidas calientes",
+      "sizes": [
+        {
+          "key": "mini",
+          "label": "Mini",
+          "detail": "60 ml"
+        },
+        {
+          "key": "chico",
+          "label": "Chico",
+          "detail": "354 ml"
+        }
+      ],
+      "items": [
+        {
+          "name": "Expresso sencillo",
+          "prices": {
+            "mini": 50
+          }
+        },
+        {
+          "name": "Expresso doble",
+          "prices": {
+            "mini": 60
+          }
+        },
+        {
+          "name": "Americano",
+          "prices": {
+            "chico": 60
+          }
+        },
+        {
+          "name": "Capuchino",
+          "prices": {
+            "chico": 65
+          },
+          "tags": [
+            "recomendado"
+          ]
+        },
+        {
+          "name": "Capuchino caramelo / vainilla",
+          "prices": {
+            "chico": 70
+          }
+        },
+        {
+          "name": "Capuchino caramelo / vainilla sugar free",
+          "prices": {
+            "chico": 80
+          }
+        },
+        {
+          "name": "Latte",
+          "prices": {
+            "chico": 70
+          }
+        },
+        {
+          "name": "Latte caramelo / vainilla sugar free",
+          "prices": {
+            "chico": 80
+          }
+        },
+        {
+          "name": "Mazapán",
+          "prices": {
+            "chico": 70
+          }
+        },
+        {
+          "name": "Matcha",
+          "prices": {
+            "chico": 70
+          }
+        },
+        {
+          "name": "Café chai",
+          "prices": {
+            "chico": 70
+          }
+        },
+        {
+          "name": "Macchiato",
+          "prices": {
+            "chico": 70
+          }
+        },
+        {
+          "name": "Flat white",
+          "prices": {
+            "chico": 70
+          }
+        },
+        {
+          "name": "Chocolate caliente",
+          "prices": {
+            "chico": 70
+          }
+        },
+        {
+          "name": "Té de frutos rojos",
+          "prices": {
+            "chico": 70
+          }
+        },
+        {
+          "name": "Affogato",
+          "prices": {
+            "chico": 90
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bebidas de la casa",
+      "subtitle": "Solo fríos",
+      "sizes": [
+        {
+          "key": "grande",
+          "label": "Grande",
+          "detail": "470 ml"
+        },
+        {
+          "key": "jumbo",
+          "label": "Jumbo",
+          "detail": "946 ml"
+        }
+      ],
+      "items": [
+        {
+          "name": "Charlot",
+          "prices": {
+            "grande": 90,
+            "jumbo": 120
+          },
+          "description": "Expresso doble con leche y horchata"
+        },
+        {
+          "name": "Dulce Canela",
+          "prices": {
+            "grande": 90,
+            "jumbo": 120
+          },
+          "description": "Expresso doble con leche, jarabe de vainilla y canela"
+        },
+        {
+          "name": "Sabor a chocolate",
+          "prices": {
+            "grande": 90,
+            "jumbo": 120
+          },
+          "description": "Expresso doble con leche, jarabe de vainilla y chocolate"
+        },
+        {
+          "name": "Jardín de Carlota",
+          "prices": {
+            "grande": 90,
+            "jumbo": 120
+          },
+          "description": "Expresso doble con leche, jarabe de frambuesa y zarzamora"
+        }
+      ]
+    },
+    {
+      "name": "Frappés",
+      "sizes": [
+        {
+          "key": "grande",
+          "label": "Grande",
+          "detail": "470 ml"
+        },
+        {
+          "key": "jumbo",
+          "label": "Jumbo",
+          "detail": "946 ml"
+        }
+      ],
+      "items": [
+        {
+          "name": "Café",
+          "prices": {
+            "grande": 70,
+            "jumbo": 100
+          }
+        },
+        {
+          "name": "Café chai",
+          "prices": {
+            "grande": 90,
+            "jumbo": 120
+          }
+        },
+        {
+          "name": "Moka",
+          "prices": {
+            "grande": 90,
+            "jumbo": 120
+          }
+        },
+        {
+          "name": "Caramelo",
+          "prices": {
+            "grande": 90,
+            "jumbo": 120
+          }
+        },
+        {
+          "name": "Mazapán",
+          "prices": {
+            "grande": 90,
+            "jumbo": 120
+          }
+        },
+        {
+          "name": "Taro",
+          "prices": {
+            "grande": 100,
+            "jumbo": 120
+          }
+        },
+        {
+          "name": "Oreo",
+          "prices": {
+            "grande": 100,
+            "jumbo": 120
+          },
+          "tags": [
+            "recomendado"
+          ]
+        },
+        {
+          "name": "Matcha",
+          "prices": {
+            "grande": 100,
+            "jumbo": 120
+          }
+        },
+        {
+          "name": "Lotus",
+          "prices": {
+            "grande": 100,
+            "jumbo": 130
+          }
+        },
+        {
+          "name": "Mamut",
+          "prices": {
+            "grande": 100,
+            "jumbo": 130
+          }
+        }
+      ]
+    },
+    {
+      "name": "Smoothies con agua",
+      "sizes": [
+        {
+          "key": "grande",
+          "label": "Grande",
+          "detail": "470 ml"
+        },
+        {
+          "key": "jumbo",
+          "label": "Jumbo",
+          "detail": "946 ml"
+        }
+      ],
+      "items": [
+        {
+          "name": "Fresa",
+          "prices": {
+            "grande": 70,
+            "jumbo": 110
+          }
+        },
+        {
+          "name": "Mango",
+          "prices": {
+            "grande": 70,
+            "jumbo": 110
+          }
+        },
+        {
+          "name": "Frutos rojos",
+          "prices": {
+            "grande": 70,
+            "jumbo": 110
+          }
+        }
+      ]
+    },
+    {
+      "name": "Smoothies con leche",
+      "sizes": [
+        {
+          "key": "grande",
+          "label": "Grande",
+          "detail": "470 ml"
+        },
+        {
+          "key": "jumbo",
+          "label": "Jumbo",
+          "detail": "946 ml"
+        }
+      ],
+      "items": [
+        {
+          "name": "Fresa",
+          "prices": {
+            "grande": 80,
+            "jumbo": 120
+          }
+        },
+        {
+          "name": "Mango",
+          "prices": {
+            "grande": 80,
+            "jumbo": 120
+          }
+        },
+        {
+          "name": "Frutos rojos",
+          "prices": {
+            "grande": 80,
+            "jumbo": 120
+          }
+        }
+      ]
+    },
+    {
+      "name": "Chamoyadas",
+      "sizes": [
+        {
+          "key": "grande",
+          "label": "Grande",
+          "detail": "470 ml"
+        },
+        {
+          "key": "jumbo",
+          "label": "Jumbo",
+          "detail": "946 ml"
+        }
+      ],
+      "items": [
+        {
+          "name": "Fresa",
+          "prices": {
+            "grande": 90,
+            "jumbo": 120
+          }
+        },
+        {
+          "name": "Mango",
+          "prices": {
+            "grande": 90,
+            "jumbo": 120
+          }
+        },
+        {
+          "name": "Frutos rojos",
+          "prices": {
+            "grande": 90,
+            "jumbo": 120
+          }
+        }
+      ]
+    },
+    {
+      "name": "Nuestros refresher",
+      "sizes": [
+        {
+          "key": "grande",
+          "label": "Grande",
+          "detail": "470 ml"
+        },
+        {
+          "key": "jumbo",
+          "label": "Jumbo",
+          "detail": "946 ml"
+        }
+      ],
+      "note": "Pregunta por las bebidas de temporada",
+      "items": [
+        {
+          "name": "Blueberry Açaí",
+          "prices": {
+            "grande": 75,
+            "jumbo": 110
+          }
+        },
+        {
+          "name": "Lemon Raspberry",
+          "prices": {
+            "grande": 75,
+            "jumbo": 110
+          }
+        },
+        {
+          "name": "Arándano sunset",
+          "prices": {
+            "grande": 75,
+            "jumbo": 110
+          }
+        },
+        {
+          "name": "Mango maracuyá",
+          "prices": {
+            "grande": 75,
+            "jumbo": 110
+          }
+        }
+      ]
+    },
+    {
+      "name": "Malteadas",
+      "sizes": [
+        {
+          "key": "grande",
+          "label": "Grande",
+          "detail": "470 ml"
+        }
+      ],
+      "items": [
+        {
+          "name": "Chocolate",
+          "prices": {
+            "grande": 100
+          }
+        },
+        {
+          "name": "Cookies and cream",
+          "prices": {
+            "grande": 100
+          }
+        },
+        {
+          "name": "Vainilla",
+          "prices": {
+            "grande": 100
+          }
+        }
+      ]
+    },
+    {
+      "name": "Panadería",
+      "items": [
+        {
+          "name": "Chocolatín",
+          "prices": {
+            "unico": 60
+          }
+        },
+        {
+          "name": "Chocolatín almendrado",
+          "prices": {
+            "unico": 75
+          }
+        },
+        {
+          "name": "Croissant relleno",
+          "prices": {
+            "unico": 75
+          },
+          "description": "Almendra, queso de bola, Nutella o pistache",
+          "tags": [
+            "recomendado"
+          ]
+        },
+        {
+          "name": "Concha",
+          "prices": {
+            "unico": 40
+          }
+        },
+        {
+          "name": "Rebanada de torta de cielo",
+          "prices": {
+            "unico": 65
+          }
+        },
+        {
+          "name": "Rol clásico",
+          "prices": {
+            "unico": 50
+          },
+          "tags": [
+            "recomendado"
+          ]
+        },
+        {
+          "name": "Rol glaseado",
+          "prices": {
+            "unico": 60
+          }
+        },
+        {
+          "name": "Rol Philadelphia",
+          "prices": {
+            "unico": 70
+          }
+        },
+        {
+          "name": "Rol Oreo",
+          "prices": {
+            "unico": 85
+          }
+        },
+        {
+          "name": "Rol fresa",
+          "prices": {
+            "unico": 85
+          }
+        },
+        {
+          "name": "Rol Lotus",
+          "prices": {
+            "unico": 85
+          }
+        },
+        {
+          "name": "Rol Nutella y queso de bola",
+          "prices": {
+            "unico": 85
+          }
+        },
+        {
+          "name": "Rol dulce de leche y nuez",
+          "prices": {
+            "unico": 85
+          }
+        },
+        {
+          "name": "Galletas",
+          "prices": {
+            "unico": 60
+          },
+          "description": "Oreo, M&M's, Kinder, etc."
+        },
+        {
+          "name": "Budín",
+          "prices": {
+            "unico": 50
+          }
+        }
+      ]
+    },
+    {
+      "name": "Postres",
+      "items": [
+        {
+          "name": "Vasito de tiramisú",
+          "prices": {
+            "unico": 60
+          }
+        },
+        {
+          "name": "Vasito de queso de bola con Nutella",
+          "prices": {
+            "unico": 60
+          }
+        },
+        {
+          "name": "Vasito de Nutella",
+          "prices": {
+            "unico": 60
+          }
+        },
+        {
+          "name": "Vasito fudge",
+          "prices": {
+            "unico": 60
+          }
+        },
+        {
+          "name": "Malangas",
+          "prices": {
+            "unico": 45
+          },
+          "description": "100 g"
+        },
+        {
+          "name": "Vaso mini roles",
+          "prices": {
+            "unico": 85
+          }
+        },
+        {
+          "name": "Tarta vasca clásica",
+          "prices": {
+            "unico": 120
+          },
+          "description": "220 g"
+        },
+        {
+          "name": "Mostachón",
+          "prices": {
+            "unico": 85
+          }
+        }
+      ]
+    },
+    {
+      "name": "Refrescos y agua",
+      "items": [
+        {
+          "name": "Coca-Cola normal o light",
+          "prices": {
+            "unico": 35
+          }
+        },
+        {
+          "name": "Agua embotellada",
+          "prices": {
+            "unico": 15
+          },
+          "description": "1 L"
+        },
+        {
+          "name": "Agua mineral",
+          "prices": {
+            "unico": 30
+          }
+        }
+      ]
+    },
+    {
+      "name": "Chapatas",
+      "items": [
+        {
+          "name": "Champipesto",
+          "prices": {
+            "unico": 120
+          },
+          "description": "Chapata de pesto (aderezo preparado con albahaca), queso mozzarella y champiñón."
+        },
+        {
+          "name": "Suprema",
+          "prices": {
+            "unico": 120
+          },
+          "description": "Chapata de jamón de pavo, queso gouda, mayonesa, un huevo estrellado junto con trocitos de tocino."
+        },
+        {
+          "name": "Pizzapata",
+          "prices": {
+            "unico": 110
+          },
+          "description": "Chapata con rebanadas de pepperoni, queso mozzarella y salsa de tomate estilo pizza."
+        },
+        {
+          "name": "Tropicarlota",
+          "prices": {
+            "unico": 110
+          },
+          "description": "Chapata de jamón de pavo, queso gouda, mayonesa junto con trocitos de piña y tocino."
+        },
+        {
+          "name": "La tradicional Carlota",
+          "prices": {
+            "unico": 100
+          },
+          "description": "Chapata de jamón de pavo, queso gouda, aderezo chipotle, lechuga y rebanadas de tomate."
+        }
+      ]
+    },
+    {
+      "name": "Alimentos",
+      "items": [
+        {
+          "name": "Chilaquiles",
+          "prices": {
+            "unico": 139
+          },
+          "description": "Con salsa roja o verde a elegir y pollo.",
+          "tags": [
+            "recomendado"
+          ]
+        },
+        {
+          "name": "Orden de huevos",
+          "prices": {
+            "unico": 110
+          },
+          "description": "Huevos revueltos con frijol, lechuga, tomate y totopos."
+        },
+        {
+          "name": "Orden de huevos con longaniza",
+          "prices": {
+            "unico": 139
+          },
+          "description": "Huevos revueltos con longaniza, frijol, lechuga, tomate y totopos."
+        },
+        {
+          "name": "Ensalada Carlota",
+          "prices": {
+            "unico": 139
+          },
+          "description": "Ensalada de la casa con pollo, fresa, lechuga y crutones."
+        },
+        {
+          "name": "Hot cakes tradicionales",
+          "prices": {
+            "unico": 110
+          },
+          "description": "3 hot cakes acompañados con miel y mantequilla."
+        },
+        {
+          "name": "Hot cakes Carlota",
+          "prices": {
+            "unico": 139
+          },
+          "description": "3 hot cakes acompañados con fresa y Nutella."
+        },
+        {
+          "name": "Sandwich",
+          "prices": {
+            "unico": 75
+          },
+          "description": "Con pan Bimbo Cero, lechuga, jamón de pavo, tomate y queso panela."
+        }
+      ]
+    },
+    {
+      "name": "Extras",
+      "items": [
+        {
+          "name": "Huevo",
+          "prices": {
+            "unico": 15
+          }
+        },
+        {
+          "name": "Shot expresso",
+          "prices": {
+            "unico": 15
+          }
+        },
+        {
+          "name": "Cambio de leche de coco o almendra",
+          "prices": {
+            "unico": 15
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -5,7 +5,8 @@ import { DIGITAL_MENU_URL } from "@/lib/config";
 import type { Role } from "@/lib/types";
 import { PageHeader } from "@/components/ui";
 
-export function MenuManager({ role = "admin" }: { role?: Role }) {
+export function MenuManager({ role = "admin" }: { role?: Role } = {}) {
+  void role;
   const [copied, setCopied] = useState(false);
 
   async function handleCopyLink() {
