@@ -1,247 +1,147 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import {
-  getCategories,
-  getProducts,
-  type CatalogCategory,
-  type CatalogProduct,
-} from "@/lib/catalog-adapter";
-import { formatMoney, type Role } from "@/lib/types";
-import { canToggleItemAvailability } from "@/lib/roles";
-import { usePos } from "@/lib/pos-context";
+import { useState } from "react";
+import { DIGITAL_MENU_URL } from "@/lib/config";
+import type { Role } from "@/lib/types";
 import { PageHeader } from "@/components/ui";
 
 export function MenuManager({ role = "admin" }: { role?: Role }) {
-  const { isProductAvailable, toggleProductAvailability } = usePos();
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("Todas");
-  const [search, setSearch] = useState("");
+  const [copied, setCopied] = useState(false);
 
-  const canToggleAvailability = canToggleItemAvailability(role);
-  const categories: CatalogCategory[] = useMemo(() => getCategories(), []);
-  const allProducts: CatalogProduct[] = useMemo(() => getProducts(), []);
-
-  const totalCatalogItems = allProducts.length;
-
-  const filteredProducts = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    return allProducts.filter((p) => {
-      const matchCat =
-        selectedCategoryId === "Todas" || p.categoryId === selectedCategoryId;
-      const matchQuery =
-        !q ||
-        p.name.toLowerCase().includes(q) ||
-        (p.description && p.description.toLowerCase().includes(q)) ||
-        p.categoryName.toLowerCase().includes(q);
-      return matchCat && matchQuery;
-    });
-  }, [allProducts, selectedCategoryId, search]);
+  async function handleCopyLink() {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(DIGITAL_MENU_URL);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = DIGITAL_MENU_URL;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand("copy");
+        textArea.remove();
+      }
+      setCopied(true);
+      setTimeout(() => setCopied(false), 3000);
+    } catch (err) {
+      console.error("Error al copiar enlace:", err);
+    }
+  }
 
   return (
-    <>
+    <div className="space-y-6">
       <PageHeader
-        title="Catálogo del Menú"
-        subtitle={
-          role === "mesero"
-            ? "Consulta oficial de platillos, presentaciones, tamaños y disponibilidad"
-            : "Consulta del catálogo oficial y administración de disponibilidad (demostración)"
-        }
-      >
-        <div className="flex items-center gap-2">
-          <span className="rounded-xl border border-wine/20 bg-wine/10 px-3 py-1.5 text-xs font-bold text-wine">
-            {totalCatalogItems} productos · Versión 2026.1 (MXN)
-          </span>
-        </div>
-      </PageHeader>
+        title="Menú digital"
+        subtitle="Acceso al catálogo público de comensales disponible para consulta y escaneo por QR."
+      />
 
-      {/* Banner de fuente de verdad del catálogo */}
-      <div className="mb-5 rounded-2xl border border-wine/15 bg-paper p-4 shadow-xs">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-          <div>
-            <p className="font-bold text-ink">
-              Fuente oficial: <code className="rounded bg-cream px-1.5 py-0.5 font-mono text-wine">data/catalogo.json</code>
-            </p>
-            <p className="text-mute mt-0.5">
-              Los productos, tamaños y precios provienen exclusivamente del menú oficial validado.
-              {canToggleAvailability
-                ? " Las modificaciones de disponibilidad se conservan en la capa de estado temporal de demostración."
-                : " Vista de consulta para servicio de salón."}
-            </p>
+      {/* Tarjeta principal de acceso y compartición */}
+      <div className="rounded-2xl border border-ink/10 bg-paper p-6 sm:p-8 shadow-sm">
+        <div className="max-w-2xl">
+          <div className="inline-flex items-center gap-2 rounded-full border border-wine/20 bg-wine/10 px-3.5 py-1 text-xs font-semibold text-wine mb-4">
+            <span>🌐</span>
+            <span>Aplicación Web Independiente</span>
           </div>
-          <div className="shrink-0">
-            <span className="inline-flex items-center rounded-lg bg-cream px-2.5 py-1 text-[11px] font-semibold text-ink">
-              Moneda: pesos mexicanos (MXN)
-            </span>
-          </div>
-        </div>
-      </div>
 
-      {/* Buscador y Filtros */}
-      <div className="mb-4 space-y-3">
-        <div className="relative">
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Buscar por platillo, ingrediente o categoría (ej. Latte, Chapatas, Mostachón)…"
-            className="w-full rounded-2xl border border-ink/15 bg-paper px-4 py-3 text-base sm:text-sm outline-none focus:border-wine shadow-xs"
-          />
-          {search && (
+          <h2 className="font-display text-2xl sm:text-3xl font-bold text-ink">
+            Catálogo y Menú Digital La Carlota
+          </h2>
+
+          <p className="mt-2 text-sm sm:text-base text-mute leading-relaxed">
+            Los comensales acceden a este menú desde sus dispositivos móviles escaneando los códigos QR de las mesas o mediante el enlace web directo.
+          </p>
+
+          {/* Acciones principales */}
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <a
+              href={DIGITAL_MENU_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-[48px] items-center justify-center gap-2.5 rounded-xl bg-wine px-6 py-3 text-sm font-semibold text-cream shadow-md transition-all hover:bg-wine-light active:scale-95 focus:outline-hidden focus:ring-3 focus:ring-wine/40"
+              aria-label="Abrir menú digital en pestaña nueva"
+            >
+              <span>Abrir menú digital</span>
+              <span className="text-base" aria-hidden="true">↗</span>
+            </a>
+
             <button
-              onClick={() => setSearch("")}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-mute hover:text-ink"
+              type="button"
+              onClick={handleCopyLink}
+              className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl border border-ink/20 bg-cream/60 px-5 py-3 text-sm font-semibold text-ink transition-all hover:bg-cream hover:border-ink/30 active:scale-95 focus:outline-hidden focus:ring-3 focus:ring-wine/20"
+              aria-label="Copiar enlace del menú digital al portapapeles"
             >
-              Limpiar
+              <span>{copied ? "✓" : "📋"}</span>
+              <span>{copied ? "¡Enlace copiado!" : "Copiar enlace"}</span>
             </button>
-          )}
-        </div>
+          </div>
 
-        {/* Chips de categorías con scroll horizontal */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-          <button
-            onClick={() => setSelectedCategoryId("Todas")}
-            className={`min-h-[40px] shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold transition-all active:scale-95 ${
-              selectedCategoryId === "Todas"
-                ? "bg-wine text-cream shadow-xs"
-                : "bg-paper text-mute hover:bg-sand border border-ink/10"
-            }`}
-          >
-            Todas ({totalCatalogItems})
-          </button>
-          {categories.map((c) => {
-            const active = selectedCategoryId === c.id;
-            return (
-              <button
-                key={c.id}
-                onClick={() => setSelectedCategoryId(c.id)}
-                className={`min-h-[40px] shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold transition-all active:scale-95 ${
-                  active
-                    ? "bg-wine text-cream shadow-xs"
-                    : "bg-paper text-mute hover:bg-sand border border-ink/10"
-                }`}
-              >
-                <span>{c.name}</span>
-                <span
-                  className={`ml-1.5 rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
-                    active ? "bg-cream/20 text-cream" : "bg-ink/5 text-mute"
-                  }`}
-                >
-                  {c.productCount}
-                </span>
-              </button>
-            );
-          })}
+          {/* Enlace en texto para mayor transparencia */}
+          <div className="mt-4 flex items-center gap-2 text-xs text-mute font-mono break-all bg-cream/40 p-2.5 rounded-lg border border-ink/5">
+            <span className="font-sans text-ink/70 shrink-0 font-medium">URL:</span>
+            <span className="select-all">{DIGITAL_MENU_URL}</span>
+          </div>
+
+          {/* Nota regulatoria y arquitectónica */}
+          <div className="mt-6 rounded-xl border border-amber-300 bg-amber-50/80 p-4 text-xs text-amber-950">
+            <p className="font-semibold flex items-center gap-1.5">
+              <span>ℹ️</span>
+              <span>Nota de operación:</span>
+            </p>
+            <p className="mt-1 text-amber-900/90 leading-relaxed">
+              El menú se administra y publica desde una aplicación independiente. Los cambios de disponibilidad inmediata en el POS no alteran la versión pública hasta su sincronización formal.
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Lista de productos responsiva */}
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {filteredProducts.map((product) => {
-          const available = isProductAvailable(product.id);
-          const hasVariants = product.variants && product.variants.length > 0;
+      {/* Vista previa visual no interactiva */}
+      <div className="rounded-2xl border border-ink/10 bg-paper p-6 shadow-sm">
+        <h3 className="font-display text-lg font-semibold text-ink mb-3">
+          Vista previa del menú para comensal
+        </h3>
+        <p className="text-xs text-mute mb-5">
+          Diseño optimizado para pantallas táctiles de celulares (desde 320 px hasta iPad).
+        </p>
 
-          return (
-            <article
-              key={product.id}
-              className={`flex flex-col justify-between rounded-2xl border bg-paper p-4 shadow-xs transition-all ${
-                !available
-                  ? "border-zinc-300 opacity-60 bg-zinc-50/70"
-                  : "border-ink/10 hover:border-wine/30"
-              }`}
+        <div className="mx-auto max-w-sm rounded-2xl border-4 border-wine/30 bg-[#62110D] p-4 text-white shadow-lg">
+          <div className="text-center pb-3 border-b border-white/20">
+            <p className="text-xs uppercase tracking-widest text-white/80 font-medium">
+              La Carlota · Menú
+            </p>
+            <p className="font-serif italic text-lg text-cream mt-0.5">
+              Sabores que se quedan contigo
+            </p>
+          </div>
+
+          <div className="mt-3 space-y-2 text-xs">
+            <div className="flex justify-between items-center bg-white/10 p-2 rounded-lg">
+              <span className="font-medium">☕ Bebidas calientes y frías</span>
+              <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded">15 Categorías</span>
+            </div>
+            <div className="flex justify-between items-center bg-white/10 p-2 rounded-lg">
+              <span className="font-medium">⭐ Los más pedidos</span>
+              <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded">Destacados</span>
+            </div>
+            <div className="flex justify-between items-center bg-white/10 p-2 rounded-lg">
+              <span className="font-medium">🔍 Búsqueda rápida de platillos</span>
+              <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded">Filtros</span>
+            </div>
+          </div>
+
+          <div className="mt-4 pt-3 border-t border-white/20 text-center">
+            <a
+              href={DIGITAL_MENU_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block w-full py-2 bg-white text-[#62110D] text-xs font-bold rounded-lg hover:bg-cream transition-colors text-center"
             >
-              <div>
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-mute">
-                      {product.categoryName}
-                    </span>
-                    <h3 className="font-display text-base font-bold text-ink">
-                      {product.name}
-                    </h3>
-                  </div>
-                  {/* Badge de disponibilidad */}
-                  <div>
-                    {canToggleAvailability ? (
-                      <button
-                        type="button"
-                        onClick={() => toggleProductAvailability(product.id, role)}
-                        className={`min-h-[32px] rounded-full px-3 py-1 text-[11px] font-bold transition-all active:scale-95 ${
-                          available
-                            ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-200"
-                            : "bg-zinc-200 text-zinc-700 hover:bg-zinc-300"
-                        }`}
-                        title="Toca para cambiar disponibilidad (demostración)"
-                      >
-                        {available ? "✓ Disponible" : "✕ Agotado"}
-                      </button>
-                    ) : (
-                      <span
-                        className={`inline-block rounded-full px-2.5 py-1 text-[11px] font-semibold ${
-                          available
-                            ? "bg-emerald-100 text-emerald-800"
-                            : "bg-zinc-200 text-zinc-600"
-                        }`}
-                      >
-                        {available ? "Disponible" : "Agotado"}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {product.description && (
-                  <p className="mt-1 text-xs text-mute line-clamp-2">
-                    {product.description}
-                  </p>
-                )}
-              </div>
-
-              {/* Presentaciones y Precios en MXN */}
-              <div className="mt-3.5 border-t border-ink/10 pt-2.5">
-                {hasVariants ? (
-                  <div className="space-y-1">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-mute">
-                      Presentaciones:
-                    </p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {product.variants!.map((v, idx) => (
-                        <div
-                          key={idx}
-                          className="flex items-center gap-1 rounded-lg bg-cream px-2.5 py-1 text-xs border border-ink/10"
-                        >
-                          <span className="font-medium text-ink">
-                            {v.size}
-                            {v.volumeMl ? ` (${v.volumeMl} ml)` : ""}:
-                          </span>
-                          <span className="font-bold text-wine">
-                            {formatMoney(v.price)}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex items-baseline justify-between">
-                    <span className="text-xs text-mute">Precio:</span>
-                    <span className="font-display text-lg font-bold text-wine">
-                      {formatMoney(product.price ?? 0)}
-                    </span>
-                  </div>
-                )}
-              </div>
-            </article>
-          );
-        })}
-      </div>
-
-      {filteredProducts.length === 0 && (
-        <div className="rounded-2xl border border-dashed border-ink/20 p-12 text-center text-sm text-mute bg-paper/40">
-          <p className="font-semibold text-base text-ink mb-1">
-            No se encontraron platillos
-          </p>
-          <p className="text-xs">
-            Intenta con otro término de búsqueda o selecciona otra categoría.
-          </p>
+              Ver en vivo en Vercel ↗
+            </a>
+          </div>
         </div>
-      )}
-    </>
+      </div>
+    </div>
   );
 }

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { NAV_ITEMS } from "@/lib/roles";
 import { ROLE_LABELS, type Role } from "@/lib/types";
+import { DIGITAL_MENU_URL } from "@/lib/config";
 
 export function Sidebar({ role, user }: { role: Role; user: string }) {
   const pathname = usePathname();
@@ -156,6 +157,22 @@ export function Sidebar({ role, user }: { role: Role; user: string }) {
                   </Link>
                 );
               })}
+
+              {/* Acceso directo a Menú Digital comensal */}
+              <div className="pt-2">
+                <a
+                  href={DIGITAL_MENU_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex min-h-[46px] items-center justify-between rounded-xl border border-cream/25 bg-cream/10 px-4 py-2.5 text-xs font-semibold text-cream transition-colors hover:bg-cream/20 active:scale-95"
+                >
+                  <span className="flex items-center gap-2.5">
+                    <span>📖</span>
+                    <span>Menú digital comensal</span>
+                  </span>
+                  <span className="text-sm font-bold" aria-hidden="true">↗</span>
+                </a>
+              </div>
             </nav>
 
             <div className="border-t border-cream/10 p-4">
@@ -209,6 +226,23 @@ export function Sidebar({ role, user }: { role: Role; user: string }) {
               </Link>
             );
           })}
+
+          {/* Acceso directo a Menú Digital comensal en desktop */}
+          <div className="pt-3 px-0.5">
+            <a
+              href={DIGITAL_MENU_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex min-h-[44px] items-center justify-between rounded-xl border border-cream/20 bg-cream/10 px-3.5 py-2.5 text-xs font-semibold text-cream transition-colors hover:bg-cream/20 active:scale-95"
+              title="Abrir menú digital para comensales en pestaña nueva"
+            >
+              <span className="flex items-center gap-2">
+                <span>📖</span>
+                <span>Menú digital</span>
+              </span>
+              <span className="text-sm font-bold" aria-hidden="true">↗</span>
+            </a>
+          </div>
         </nav>
 
         <div className="border-t border-cream/10 p-4">

@@ -21,6 +21,7 @@ import {
 } from "@/lib/types";
 import { PageHeader } from "@/components/ui";
 import { usePos } from "@/lib/pos-context";
+import { DIGITAL_MENU_URL } from "@/lib/config";
 
 export function OrdersBoard({
   role = "mesero",
@@ -117,13 +118,27 @@ function OrdersBoardContent({
             : "Monitoreo general de cuentas, comandas y producción"
         }
       >
-        <button
-          onClick={() => setShowNewOrderModal(true)}
-          className="flex min-h-[46px] items-center gap-2 rounded-xl bg-wine px-5 py-2.5 text-sm font-semibold text-cream shadow-md transition-all hover:bg-wine-light active:scale-95"
-        >
-          <span className="text-lg leading-none">+</span>
-          <span>Nuevo pedido</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <a
+            href={DIGITAL_MENU_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex min-h-[46px] items-center gap-2 rounded-xl border border-wine/20 bg-wine/10 px-4 py-2.5 text-sm font-semibold text-wine transition-all hover:bg-wine/20 active:scale-95"
+            title="Abrir menú digital para comensales en pestaña nueva"
+            aria-label="Abrir menú digital para comensales en pestaña nueva"
+          >
+            <span>📖</span>
+            <span className="hidden sm:inline">Menú digital</span>
+            <span className="text-xs" aria-hidden="true">↗</span>
+          </a>
+          <button
+            onClick={() => setShowNewOrderModal(true)}
+            className="flex min-h-[46px] items-center gap-2 rounded-xl bg-wine px-5 py-2.5 text-sm font-semibold text-cream shadow-md transition-all hover:bg-wine-light active:scale-95"
+          >
+            <span className="text-lg leading-none">+</span>
+            <span>Nuevo pedido</span>
+          </button>
+        </div>
       </PageHeader>
 
       {/* Banner informativo de reglas de confirmación */}
